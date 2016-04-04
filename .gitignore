@@ -26,3 +26,15 @@
 *.exe
 *.out
 *.app
+
+# VS2015 Envir
+*.sdf
+*.sln
+*.vcxproj
+*.filters
+*.opendb
+
+# Filter File
+/Debug/*
+/DreamEngine/Debug/*
+/.vs/*

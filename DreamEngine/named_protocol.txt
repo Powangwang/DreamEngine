@@ -1,0 +1,50 @@
+一.结构体
+typedef struct _LOOKATME
+{
+	DWORD lamLong;
+	LONG    lamLat;
+	FLOAT   lamRate;
+	DreamFont lamFont;
+}LOOKATME, *pLOOKATME;
+
+二.类
+class DShowType					//D（Dream)为前缀
+{
+public:
+	DWORD CreateShow(FLOAT showType);
+
+private:
+	FLOAT m_ascDddCcc;				// "m_"前缀，第一个单词全小写，剩下每个单词第一个字母大写
+	LOOKATME m_asdDfgHjk;	
+};
+
+三.enum
+enum SHOWTYPE
+{
+	GoodShow,
+	BadShow,
+	YesShow
+}
+
+四.union
+union SHOWTYPE
+{
+	LOOKATME lookAtMe;
+	FLOAT fontDirect
+}
+
+五.其它
+1.宏定义	如，#define HELLOW 1
+2.函数命名		如，CreateThread()
+3.普通变量		如, tmpBuff
+4.指针变量		如，pTmpBuff		可以考虑加 "p"前缀
+
+
+
+
+
+
+
+
+
+
