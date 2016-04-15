@@ -8,10 +8,10 @@ typedef struct _LOOKATME
 }LOOKATME, *pLOOKATME;
 
 二.类
-class DShowType					//D（Dream)为前缀
+class DDISPLAYTYPE					//D（Dream)为前缀
 {
 public:
-	DWORD CreateShow(FLOAT showType);
+	DWORD CreateShow(FLOAT DISPLAYTYPE);
 
 private:
 	FLOAT m_ascDddCcc;				// "m_"前缀，第一个单词全小写，剩下每个单词第一个字母大写
@@ -19,7 +19,7 @@ private:
 };
 
 三.enum
-enum SHOWTYPE
+enum DISPLAYTYPE
 {
 	GoodShow,
 	BadShow,
@@ -27,7 +27,7 @@ enum SHOWTYPE
 }
 
 四.union
-union SHOWTYPE
+union DISPLAYTYPE
 {
 	LOOKATME lookAtMe;
 	FLOAT fontDirect

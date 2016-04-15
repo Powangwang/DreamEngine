@@ -33,6 +33,8 @@
 *.vcxproj
 *.filters
 *.opendb
+*.filters
+*.user
 
 # Filter File
 /Debug/*

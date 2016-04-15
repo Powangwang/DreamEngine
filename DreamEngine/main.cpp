@@ -1,14 +1,5 @@
-#include "stdio.h"
-#include <Windows.h>
-#include <d3d9.h>
-#include<d3dx9.h>
-//#include "Teapot.h"
-//#include "Camera.h"
-//#include "Light.h"
-//#include "SkyBox.h"
-//#include "Gloab.h"
-//#include "DreamFont.h"
-//#include "Terrain.h"
+#include "_CommAction\DEInitialize.h"
+#include "_Obj\Camera.h"
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
@@ -22,13 +13,8 @@ void RenderScene();
 void Shutdown();
 
 //Teapot tp;
-//Camera camera;
-//Light light;
-//SkyBox skybox;
-//D3DMATERIAL9 mat;
-//DFont* font;
-//DTerrain* terrain;
-
+Camera* camera;
+DGameObject* box;
 
 WCHAR buff[1024] = { 0 };
 //ID3DXMesh* Objects[4] = { 0, 0, 0, 0 };
@@ -146,9 +132,11 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 
 bool InitializeD3D(HWND hWnd, bool fullscreen)
 {
-	//if (DGameObject::InitializeD3D(hWnd, fullscreen, WINDOW_WIDTH, WINDOW_HEIGHT) == FALSE)
-	//	return false;
-	//if (!InitializeObjects()) return false;
+	if (!DDEInitialize::InitializeD3D(hWnd, fullscreen, WINDOW_WIDTH, WINDOW_HEIGHT))
+		return false;
+	if (!InitializeObjects()) 
+		return false;
+
 	//D3DXVECTOR3 pos;
 	//pos.x = 1.11;
 	//pos.y = 2.22;
@@ -178,21 +166,34 @@ bool InitializeD3D(HWND hWnd, bool fullscreen)
 	//D3DXMatrixScaling(&matrix, scale.x, scale.y, scale.z);
 	//m_transMatrix *= matrix;
 
+	//D3DXMATRIX mat1;
+	//D3DXMatrixIdentity(&mat1);
+
+	//D3DXMATRIX mat;
+	//D3DXMatrixIdentity(&mat);
+	//mat._11 = 5;
+	//mat._22 = 2;
+	//mat._33 = 4;
+	//mat = mat1 -mat;
 	return true;
 }
 
 bool InitializeObjects()
 {
-
-	//camera.CreateCamera(0.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
+	camera = new Camera();
+	//camera->CreateCamera(0.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
 	////	camera.Move(-5.0f, -0.3f, -0.0f);
 	////camera.SetPosition(0, 0, -0);
 	//camera.SetPosition(DIRECT_FRONT, 80);
 	//camera.SetPosition(DIRECT_UP, 500);
 	//camera.Rotation(DIRECT_RIGHT, D3DX_PI / 2);
-	//camera.SetCameraZf(300000.0f);
-	//camera.OpenCamera();
-
+	camera->SetCameraZf(300000.0f);
+	//camera->OpenCamera();
+	
+	box = new DGameObject();
+	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
+	if (meshRender != nullptr)
+		meshRender->CreateMeshBox(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	//tp.Create();
 	////tp.Rotation(DIRECT_RIGHT, 0.0f);
 
@@ -224,8 +225,8 @@ bool InitializeObjects()
 
 void RenderScene()
 {
-	//camera.BegineShowObject();
-
+	camera->BegineShowObject();
+	box->Run();
 	//terrain->ShowTerrain(TRUE);
 	//skybox.ShowSkyBox(FALSE);
 	//tp.Show();
@@ -235,7 +236,7 @@ void RenderScene()
 	//font->ShowText(0, 0, D3DXCOLOR(255, 0, 0, 255), buff);
 
 
-	//camera.EndShowObject();
+	camera->EndShowObject();
 }
 
 
@@ -243,4 +244,6 @@ void Shutdown()
 {
 	//camera.DestroyCamera();
 	//tp.Destroy();
+
+	DDEInitialize::EndInitD3D();
 }
