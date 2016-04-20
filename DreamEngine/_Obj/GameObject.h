@@ -1,5 +1,5 @@
 #pragma once
-#include "../_Component/RenderModule/CommRenderHead.h"
+#include "../_Component/CommComponent.h"
 #include <vector>
 
 class DGameObject
@@ -19,5 +19,6 @@ protected:
 	//DTransform transform;
 	vector<DBaseCom*> m_coms;
 	DGameObject* m_parent;
+	LPDIRECT3DDEVICE9 m_d3dDivce;
 };
 

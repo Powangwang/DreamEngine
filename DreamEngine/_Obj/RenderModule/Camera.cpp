@@ -1,16 +1,10 @@
 #include"Camera.h"
 //#include "../_CommAction/DEInitialize.h"
-Camera::Camera() : DGameObject()
+Camera::Camera() : DGameObject(),
+	m_isEnable(TRUE), m_viewAngle(VIEW_ANGLE),
+	m_viewWidth(VIEW_WIDTH), m_viewHeight(VIEW_HEIGHT),
+	m_displayType(DISPLAYTYPE::PerspectiveFovLH), m_zn(0.1f), m_zf(1.0f)
 {
-	m_isEnable = TRUE;	
-
-	m_viewAngle = VIEW_ANGLE;
-	m_viewWidth = VIEW_WIDTH;
-	m_viewHeight = VIEW_HEIGHT;
-
-	m_displayType = PerspectiveFovLH;
-	m_zn = 0.1f;
-	m_zf = 1.0f;
 	D3DXVECTOR3 pos(0, 0, -5.0f);
 	GetTransform()->SetPosition(pos);
 	if (!SetCameraProjection()) return ;
@@ -40,7 +34,7 @@ BOOL Camera::SetCameraProjection()
 		D3DXMatrixPerspectiveFovLH(&projection, D3DX_PI * m_viewAngle, m_viewWidth / m_viewHeight, m_zn, m_zf);
 	else if (m_displayType == OrthoLH)
 		D3DXMatrixOrthoLH(&projection, m_viewWidth, m_viewHeight, 0.1f, 1000.0f);
-	if (FAILED(DDEInitialize::GetDevice()->SetTransform(D3DTS_PROJECTION, &projection)))
+	if (FAILED(m_d3dDivce->SetTransform(D3DTS_PROJECTION, &projection)))
 		return FALSE;
 	return TRUE;
 }
@@ -62,7 +56,7 @@ BOOL Camera::SetCameraView()
 	transform->GetSelfFront(&lookAt);
 	transform->GetSelfUp(&lookUp);
 	D3DXMatrixLookAtLH(&viewMatrix, &pos, &lookAt, &lookUp);
-	if (FAILED(DDEInitialize::GetDevice()->SetTransform(D3DTS_VIEW, &viewMatrix)))
+	if (FAILED(m_d3dDivce->SetTransform(D3DTS_VIEW, &viewMatrix)))
 		return FALSE;
 	return TRUE;
 }
@@ -85,22 +79,22 @@ BOOL Camera::BegineShowObject()
 {
 	if (!m_isEnable)
 		return FALSE;
-	DDEInitialize::GetDevice()->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(60, 150, 150), 1.0f, 0);
-	DDEInitialize::GetDevice()->BeginScene();
+	m_d3dDivce->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(60, 150, 150), 1.0f, 0);
+	m_d3dDivce->BeginScene();
 	return TRUE;
 }
 BOOL Camera::EndShowObject()
 {
 	if (!m_isEnable)
 		return FALSE;
-	DDEInitialize::GetDevice()->EndScene();
-	DDEInitialize::GetDevice()->Present(NULL, NULL, NULL, NULL);
+	m_d3dDivce->EndScene();
+	m_d3dDivce->Present(NULL, NULL, NULL, NULL);
 	return TRUE;
 }
 
 BOOL Camera::SetViewPort(const D3DVIEWPORT9* pViewPort)
 {
-	DDEInitialize::GetDevice()->SetViewport(pViewPort);
+	m_d3dDivce->SetViewport(pViewPort);
 	return TRUE;
 }
 

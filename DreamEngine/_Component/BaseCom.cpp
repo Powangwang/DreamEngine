@@ -5,13 +5,13 @@ DBaseCom::DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj)
 	:m_comName(comName), m_comType(type), m_gameObj(gameObj)
 {
 	m_d3dDivce = DDEInitialize::GetDevice();
-	if (m_d3dDivce != NULL)
+	if (m_d3dDivce != nullptr)
 		m_d3dDivce->AddRef();
 }
 
 DBaseCom::~DBaseCom()
 {
-	if (m_d3dDivce != NULL)
+	if (m_d3dDivce != nullptr)
 		m_d3dDivce->Release();
 }
 

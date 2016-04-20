@@ -11,7 +11,8 @@ enum  COMTYPE
 {
 	Unkown,
 	DERenderTransform,
-	DERenderMesh
+	DERenderMesh,
+	DERenderMaterial
 };
 class DBaseCom
 {

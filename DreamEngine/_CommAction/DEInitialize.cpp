@@ -1,5 +1,5 @@
 #include "DEInitialize.h"
-LPDIRECT3DDEVICE9 DDEInitialize::g_device = NULL;
+LPDIRECT3DDEVICE9 DDEInitialize::g_device = nullptr;
 DDEInitialize::DDEInitialize()
 {
 	//InitializeD3D(hWnd, false, 800, 600);

@@ -1,5 +1,5 @@
 #include "_CommAction\DEInitialize.h"
-#include "_Obj\Camera.h"
+#include "_Obj\RenderModule\Camera.h"
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
