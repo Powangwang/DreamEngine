@@ -1,5 +1,6 @@
-#include "_CommAction\DEInitialize.h"
-#include "_Obj\RenderModule\Camera.h"
+//#include "_CommAction\DEInitialize.h"
+//#include "_Obj\RenderModule\Camera.h"
+#include "_Obj\CommObj.h"
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
@@ -14,6 +15,7 @@ void Shutdown();
 
 //Teapot tp;
 Camera* camera;
+DLight* light;
 DGameObject* box;
 
 WCHAR buff[1024] = { 0 };
@@ -105,7 +107,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
 
-
 		// Enter the message loop
 		MSG msg;
 		ZeroMemory(&msg, sizeof(msg));
@@ -181,44 +182,21 @@ bool InitializeD3D(HWND hWnd, bool fullscreen)
 bool InitializeObjects()
 {
 	camera = new Camera();
-	//camera->CreateCamera(0.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
-	////	camera.Move(-5.0f, -0.3f, -0.0f);
-	////camera.SetPosition(0, 0, -0);
-	//camera.SetPosition(DIRECT_FRONT, 80);
-	//camera.SetPosition(DIRECT_UP, 500);
-	//camera.Rotation(DIRECT_RIGHT, D3DX_PI / 2);
 	camera->SetCameraZf(300000.0f);
-	//camera->OpenCamera();
-	
+	camera->Apply();
+
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
 	if (meshRender != nullptr)
-		meshRender->CreateMeshBox(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	//tp.Create();
-	////tp.Rotation(DIRECT_RIGHT, 0.0f);
-
-
-	//light.CreateLight(D3DLIGHT_DIRECTIONAL);
-	//light.OpenLight();
-
-	//terrain = new DTerrain(64, 64, 10, 2);
-	//terrain->InitTerrain(L"coastMountain64.raw");
-
-
-	////	terrain->SetTerrainColor(new D3DXVECTOR3(0, 1, 0));
-	//ZeroMemory(&mat, sizeof(D3DMATERIAL9));
-	//mat.Ambient = RED;
-	//mat.Diffuse = RED;
-	//mat.Specular = RED;
-	//mat.Emissive = BLACK;
-	//DGameObject::GetDevice()->SetMaterial(&mat);
-
-	//skybox.CreateSkyBox(20000);
-	//skybox.OpenSkyBox(L"frontsnow1.jpg", L"backsnow1.jpg", L"leftsnow1.jpg", L"rightsnow1.jpg", L"topsnow1.jpg");
-
-
-	//font = new DFont();
-	//font->CreateRenderFont();
+	{
+		//meshRender->CreateMeshSphere(1.0f);
+		//meshRender->CreateMeshBox(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+		meshRender->CreateMeshTeapot();
+	}
+	
+	light = new DLight();
+	if (light != nullptr)
+		light->Apply();
 	return true;
 }
 

@@ -1,7 +1,7 @@
 #include "Transform.h"
 
-DTransform::DTransform(DGameObject* gameObj):
-	DBaseCom(L"", COMTYPE::DERenderTransform, gameObj)
+DTransform::DTransform(DGameObject* gameObj, DWORD indexInParent):
+	DBaseCom(L"", COMTYPE::DERenderTransform, gameObj, indexInParent)
 {
 	//D3DXMatrixIdentity(&m_transMatrix);
 	m_position.x = 0.0f;
@@ -17,8 +17,9 @@ DTransform::DTransform(DGameObject* gameObj):
 
 }
 
-DTransform::DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* gameObj, wstring comName ):
-	DBaseCom(comName, COMTYPE::DERenderTransform, gameObj)
+DTransform::DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale,
+													DGameObject* gameObj, DWORD indexInParent, wstring comName ):
+	DBaseCom(comName, COMTYPE::DERenderTransform, gameObj, indexInParent)
 {
 	m_position = pos;
 	m_scale = scale;

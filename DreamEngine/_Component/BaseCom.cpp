@@ -1,8 +1,9 @@
 #include "BaseCom.h"
 #include "../_CommAction/DEInitialize.h"
 
-DBaseCom::DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj)
-	:m_comName(comName), m_comType(type), m_gameObj(gameObj)
+DBaseCom::DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj, DWORD indexInParent)
+	:m_comName(comName), m_comType(type), m_gameObj(gameObj), m_indexInParent(indexInParent),
+	m_isEnabled(TRUE)
 {
 	m_d3dDivce = DDEInitialize::GetDevice();
 	if (m_d3dDivce != nullptr)

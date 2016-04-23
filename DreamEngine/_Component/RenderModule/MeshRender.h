@@ -7,15 +7,16 @@
 class DMeshRender : public DBaseCom
 {
 public:
-	DMeshRender(DGameObject* gameObj);
+	DMeshRender(DGameObject* gameObj, DWORD indexInParent);
 	~DMeshRender();
 	BOOL CreateMeshBox(D3DXVECTOR3 size);
+	BOOL CreateMeshSphere(FLOAT radius);
+	BOOL CreateMeshTeapot();
 	VOID Run();
-
-public :
-	VOID SetDrawEnabled(BOOL isEnable) { m_isDraw = isEnable; }
+public:
+	DMateriaRender* GetMaterialRender() { return m_pMatRender; }
 private:
 	LPD3DXMESH m_pMess;
 	DMateriaRender* m_pMatRender;
-	BOOL m_isDraw;
+	//BOOL m_isDraw;
 };

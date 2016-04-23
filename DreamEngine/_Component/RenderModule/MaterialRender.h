@@ -4,14 +4,14 @@
 class DMateriaRender : public DBaseCom
 {
 public:
-	DMateriaRender(DGameObject* gameObj);
+	DMateriaRender(DGameObject * gameObj, DWORD indexInParent);
 	~DMateriaRender();
 	VOID Run();
 
 public:
-	VOID SetMaterial();
-	VOID GetMaterial();
+	VOID SetMaterial(D3DMATERIAL9& mat);
+	VOID GetMaterial(D3DMATERIAL9& pOut);
 private :
-	D3DMATERIAL9 * m_pMat;
+	D3DMATERIAL9  m_mat;
 	LPDIRECT3DTEXTURE9 * m_pTexture;
 };

@@ -1,43 +1,43 @@
 #pragma once
-#include "../GameObject.h"
+#include "GameObject.h"
 #include <vector>
 //#include <map>
 //#include <string>
 using namespace std;
 
-#define WHITE D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-#define RED D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)
-#define GREEN D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
-#define BLUE D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)
-#define BLACK D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)
 
 class DLight : public DGameObject
 {
 public:
-	DLight();
+	DLight(D3DLIGHTTYPE lightType = D3DLIGHTTYPE::D3DLIGHT_DIRECTIONAL, BOOL lightEnabled = TRUE);
 	~DLight();
-	VOID Run();
-	DWORD AddLight(D3DLIGHTTYPE lightType = D3DLIGHTTYPE::D3DLIGHT_DIRECTIONAL);
-	BOOL DelLight(DWORD index = -1);
+	virtual VOID Run();
+	virtual VOID Apply();
+	BOOL LightEnabled(BOOL isEnabled);
 
-	BOOL SetLightDiffuseColor(D3DCOLORVALUE color, BOOL isImmdApply = TRUE);
-	BOOL SetLightSpecularColor(D3DCOLORVALUE color, BOOL isImmdApply = TRUE);
-	BOOL SetLightAmbientColor(D3DCOLORVALUE color, BOOL isImmdApply = TRUE);
-	BOOL SetLightRange(FLOAT range, BOOL isImmdApply = TRUE);
-	BOOL SetLightAttenuation(FLOAT attenuation0, FLOAT attenuation1, FLOAT attenuation2, BOOL isImmdApply = TRUE);
-	BOOL SetLightAngle(FLOAT theta, FLOAT phi, BOOL isImmdApply = TRUE);
-	BOOL SetLightFalloff(FLOAT falloff, BOOL isImmdApply = TRUE);
-	BOOL SetLightPosition(float x, float y, float z, BOOL isImmdApply = TRUE);
+	BOOL SetLightDiffuseColor(D3DCOLORVALUE & color);
+	BOOL SetLightSpecularColor(D3DCOLORVALUE & color);
+	BOOL SetLightAmbientColor(D3DCOLORVALUE & color);
+	BOOL SetLightRange(FLOAT range);
+	BOOL SetLightAttenuation(FLOAT attenuation0, FLOAT attenuation1, FLOAT attenuation2);
+	BOOL SetLightAngle(FLOAT theta, FLOAT phi);
+	BOOL SetLightFalloff(FLOAT falloff);
+	BOOL SetLightPos(D3DXVECTOR3 & pos);
+	BOOL SetLightDirect(D3DXVECTOR3 & rot);
 
-	VOID SetCurrentIndex(DWORD index) { Run(); m_curIdx = index; }
-	DWORD GetCurrentIndex() { return m_curIdx; }
-	D3DLIGHTTYPE GetLightType(DWORD index);
-	VOID  SetLightType(DWORD index, D3DLIGHTTYPE lightType);
-	DWORD GetLightCount();
+	D3DLIGHTTYPE GetLightType();
+	VOID  SetLightType(D3DLIGHTTYPE lightType);
+	VOID GetLight(D3DLIGHT9* pOutLit, DWORD litIndex);
+
+
+	static DWORD GetLightCount();
 
 private:
-	//map<string, D3DLIGHT9*> m_lights;
-	vector<D3DLIGHT9*> m_lights;
-	DWORD m_curIdx;
+	VOID AddLight(D3DLIGHTTYPE lightType, BOOL lightEnabled );
+
+private:
+	//map<string, D3DLIGHT9*> m_light;
+	D3DLIGHT9 m_light;
 	BOOL m_isNeedApply;		//true表示当前索引的光照不是最新需要更新， false表示当前索引的光照是最新的，不需要更新
+	static DWORD g_lightCount;
 };

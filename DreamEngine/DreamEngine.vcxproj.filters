@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\CommAction">
+      <UniqueIdentifier>{55810c35-e357-4572-ad45-07a1ce9c57b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CommAction">
+      <UniqueIdentifier>{b64b6a97-b4d4-48f4-bd76-1a2f4b6d439d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Component">
+      <UniqueIdentifier>{b0961824-a550-419f-a862-59641cd6a361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Component\RenderModule">
+      <UniqueIdentifier>{413ab3c2-6d7f-401e-919d-df9ab6d1e874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Obj">
+      <UniqueIdentifier>{3f4f2b40-ae08-4756-afca-e6e6530a71bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Component">
+      <UniqueIdentifier>{59c18d6d-e18c-486b-82b4-0a7bf6d41050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Component\RenderModule">
+      <UniqueIdentifier>{da9ad55b-e204-45f5-8bd0-0c0abc20fa63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Obj">
+      <UniqueIdentifier>{f1ff5cc8-1dae-4e84-8141-5250f918fab9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Obj\RenderModule">
+      <UniqueIdentifier>{d480d3f2-1a0b-4db1-9f0f-aa2e5f182ab0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Obj\RenderModule">
+      <UniqueIdentifier>{c8e01619-9ba6-4116-8c52-c93e6b5e50cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="_CommAction\DEInitialize.cpp">
+      <Filter>源文件\CommAction</Filter>
+    </ClCompile>
+    <ClCompile Include="_Component\RenderModule\MeshRender.cpp">
+      <Filter>源文件\Component\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Component\RenderModule\Transform.cpp">
+      <Filter>源文件\Component\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Component\BaseCom.cpp">
+      <Filter>源文件\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="_Obj\RenderModule\Camera.cpp">
+      <Filter>源文件\Obj\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Component\RenderModule\MaterialRender.cpp">
+      <Filter>源文件\Component\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Obj\RenderModule\Light.cpp">
+      <Filter>源文件\Obj\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Obj\RenderModule\GameObject.cpp">
+      <Filter>源文件\Obj\RenderModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_Obj\Input.cpp">
+      <Filter>源文件\Obj</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="_CommAction\DEInitialize.h">
+      <Filter>头文件\CommAction</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\RenderModule\MeshRender.h">
+      <Filter>头文件\Component\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\RenderModule\Transform.h">
+      <Filter>头文件\Component\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\RenderModule\CommRenderHead.h">
+      <Filter>头文件\Component\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\CommComponent.h">
+      <Filter>头文件\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\BaseCom.h">
+      <Filter>头文件\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\RenderModule\Camera.h">
+      <Filter>头文件\Obj\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Component\RenderModule\MaterialRender.h">
+      <Filter>头文件\Component\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\RenderModule\Light.h">
+      <Filter>头文件\Obj\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\CommObj.h">
+      <Filter>头文件\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\RenderModule\GameObject.h">
+      <Filter>头文件\Obj\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\Input.h">
+      <Filter>头文件\Obj</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="named_protocol.txt">
+      <Filter>源文件</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

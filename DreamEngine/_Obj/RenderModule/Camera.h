@@ -1,6 +1,6 @@
 #pragma once
 //#include "../../_Component\RenderModule/CommRenderHead.h"
-#include "../GameObject.h"
+#include "GameObject.h"
 
 #define VIEW_ANGLE (0.5f)
 #define VIEW_WIDTH 640
@@ -8,9 +8,9 @@
 
 enum DISPLAYTYPE
 {
+	NoneType,
 	PerspectiveFovLH,
-	OrthoLH,
-	InvalidType
+	OrthoLH
 };
 
 class Camera : public DGameObject
@@ -25,12 +25,16 @@ public:
 	BOOL SetViewPort(const D3DVIEWPORT9* pViewPort);
 
 public:
-	VOID SetProjectAngle(float angle) { m_viewAngle = angle; SetCameraProjection(); }
-	VOID SetProjectWidth(float width) { m_viewWidth = width; SetCameraProjection(); }
-	VOID SetProjectHeight(float height) { m_viewHeight = height; SetCameraProjection();	}
-	VOID SetCameraType(DISPLAYTYPE type) { m_displayType = type; SetCameraProjection(); }
-	VOID SetCameraZn(FLOAT zn) { m_zn = zn; SetCameraProjection(); }
-	VOID SetCameraZf(FLOAT zf) { m_zf = zf; SetCameraProjection(); }
+	virtual VOID Run();
+	virtual VOID Apply();
+
+public:
+	VOID SetProjectAngle(float angle) { m_viewAngle = angle; m_isApply = ApplyProject; }
+	VOID SetProjectWidth(float width) { m_viewWidth = width; m_isApply = ApplyProject; }
+	VOID SetProjectHeight(float height) { m_viewHeight = height; m_isApply = ApplyProject;	}
+	VOID SetCameraType(DISPLAYTYPE type) { m_displayType = type; m_isApply = ApplyProject; }
+	VOID SetCameraZn(FLOAT zn) { m_zn = zn; m_isApply = ApplyProject; }
+	VOID SetCameraZf(FLOAT zf) { m_zf = zf; m_isApply = ApplyProject; }
 
 	FLOAT GetProjectAngle() { return m_viewAngle; }
 	FLOAT GetProjectWidth() { return m_viewWidth; }
@@ -43,16 +47,19 @@ protected:
 	BOOL SetCameraProjection();
 	BOOL SetCameraView();
 	VOID GetViewMatrix(D3DXMATRIX* viewMatrix);
-public :
-	virtual VOID Run();
 
 private:
-	BOOL m_isEnable;
 	FLOAT m_viewAngle;
 	FLOAT m_viewWidth;
 	FLOAT m_viewHeight;
 	DISPLAYTYPE m_displayType;
 	FLOAT m_zn;
 	FLOAT m_zf;
+	enum APPLYTYPE
+	{
+		ApplyNone,
+		ApplyProject,
+		ApplyView
+	} m_isApply;		//当前更改了需要保存的类型
 	//DTransform m_transform;
 };

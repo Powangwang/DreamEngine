@@ -10,8 +10,8 @@ enum Space
 class DTransform : public DBaseCom
 {
 public:
-	DTransform(DGameObject* gameObj);
-	DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* gameObj, wstring comName = L"");
+	DTransform(DGameObject* gameObj, DWORD indexInParent);
+	DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* gameObj, DWORD indexInParent, wstring comName = L"");
 	~DTransform();
 
 public:

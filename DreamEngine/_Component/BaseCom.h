@@ -17,8 +17,10 @@ enum  COMTYPE
 class DBaseCom
 {
 public:
-	DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj);
+	DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj, DWORD indexInParent);
 	~DBaseCom();
+	VOID SetEnabled(BOOL isEnabled) { m_isEnabled = isEnabled; }
+	BOOL GetEnabled() { return m_isEnabled; }
 	//GetParent();
 public:
 	virtual VOID Run() = 0;
@@ -29,5 +31,6 @@ protected:
 	wstring m_comName;
 	COMTYPE m_comType;
 	DGameObject* m_gameObj;
-
+	DWORD m_indexInParent;
+	BOOL m_isEnabled;
 };

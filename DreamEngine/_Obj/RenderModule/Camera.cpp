@@ -1,7 +1,7 @@
 #include"Camera.h"
 //#include "../_CommAction/DEInitialize.h"
 Camera::Camera() : DGameObject(),
-	m_isEnable(TRUE), m_viewAngle(VIEW_ANGLE),
+	m_viewAngle(VIEW_ANGLE),
 	m_viewWidth(VIEW_WIDTH), m_viewHeight(VIEW_HEIGHT),
 	m_displayType(DISPLAYTYPE::PerspectiveFovLH), m_zn(0.1f), m_zf(1.0f)
 {
@@ -16,7 +16,6 @@ Camera::Camera(float viewAngle, float viewWidth, float viewHeight, DISPLAYTYPE d
 	m_viewAngle(viewAngle), m_viewWidth(viewWidth), m_viewHeight(viewHeight),
 	m_displayType(displayType),m_zn(zn),m_zf(zf)
 {
-	m_isEnable = TRUE;
 	if (!SetCameraProjection()) return ;
 	if (!SetCameraView()) return ;
 }
@@ -26,7 +25,7 @@ Camera::~Camera()
 
 BOOL Camera::SetCameraProjection()
 {
-	if (!m_isEnable)
+	if (!m_isEnabled)
 		return FALSE;
 
 	D3DXMATRIX projection;
@@ -41,7 +40,7 @@ BOOL Camera::SetCameraProjection()
 
 BOOL Camera::SetCameraView()
 {
-	if (!m_isEnable)
+	if (!m_isEnabled)
 		return FALSE;
 
 	// Build view matrix.
@@ -55,6 +54,7 @@ BOOL Camera::SetCameraView()
 	transform->GetPosition(&pos, Space::Local);
 	transform->GetSelfFront(&lookAt);
 	transform->GetSelfUp(&lookUp);
+	lookAt += pos;					//摄像机看向的坐标点
 	D3DXMatrixLookAtLH(&viewMatrix, &pos, &lookAt, &lookUp);
 	if (FAILED(m_d3dDivce->SetTransform(D3DTS_VIEW, &viewMatrix)))
 		return FALSE;
@@ -77,15 +77,15 @@ VOID Camera::GetViewMatrix(D3DXMATRIX* viewMatrix)
 
 BOOL Camera::BegineShowObject()
 {
-	if (!m_isEnable)
+	if (!m_isEnabled)
 		return FALSE;
-	m_d3dDivce->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(60, 150, 150), 1.0f, 0);
+	m_d3dDivce->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	m_d3dDivce->BeginScene();
 	return TRUE;
 }
 BOOL Camera::EndShowObject()
 {
-	if (!m_isEnable)
+	if (!m_isEnabled)
 		return FALSE;
 	m_d3dDivce->EndScene();
 	m_d3dDivce->Present(NULL, NULL, NULL, NULL);
@@ -96,6 +96,15 @@ BOOL Camera::SetViewPort(const D3DVIEWPORT9* pViewPort)
 {
 	m_d3dDivce->SetViewport(pViewPort);
 	return TRUE;
+}
+
+VOID Camera::Apply()
+{
+	if (m_isApply == APPLYTYPE::ApplyProject)
+		SetCameraProjection();
+	else if (m_isApply == APPLYTYPE::ApplyView)
+		SetCameraView();
+
 }
 
 VOID Camera::Run()

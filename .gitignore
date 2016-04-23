@@ -29,12 +29,7 @@
 
 # VS2015 Envir
 *.sdf
-*.sln
-*.vcxproj
-*.filters
 *.opendb
-*.filters
-*.user
 *.db
 
 # Filter File

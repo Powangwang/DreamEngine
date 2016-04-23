@@ -1,18 +1,18 @@
 #include "GameObject.h"
 
 DGameObject::DGameObject() 
-	:m_parent(nullptr)
+	:m_parent(nullptr), m_isEnabled(TRUE)
 {
 	m_d3dDivce = DDEInitialize::GetDevice();
 	if (m_d3dDivce != nullptr)
 		m_d3dDivce->AddRef();
-	m_coms.push_back(new DTransform(this));
+	m_coms.push_back(new DTransform(this, m_coms.size()));
 }
 
 DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject* parent)
-	:m_parent(parent)
+	:m_parent(parent), m_isEnabled(TRUE)
 {
-	m_coms.push_back(new DTransform(pos, rotation, scale, this));
+	m_coms.push_back(new DTransform(pos, rotation, scale, this, m_coms.size()));
 	if (m_d3dDivce != nullptr)
 		m_d3dDivce->Release();
 }
@@ -27,10 +27,15 @@ DGameObject::~DGameObject()
 
 VOID DGameObject::Run()
 {
+	if (m_isEnabled == FALSE)
+		return;
+
 	int comCount = m_coms.size();
 	for (int index = 0; index < comCount; index++)
 	{
-		m_coms[index]->Run();
+		DBaseCom* tmpCom = m_coms[index];
+		if(tmpCom!= nullptr && tmpCom->GetEnabled())
+			tmpCom->Run();
 	}
 }
 
@@ -38,15 +43,16 @@ VOID DGameObject::Run()
 DBaseCom* DGameObject::AddComponent(COMTYPE comType)
 {
 	DBaseCom* baseCom = nullptr;
+	int comIndex = m_coms.size();
 	switch (comType)
 	{
 	case Unkown:
 		break;
 	case DERenderTransform:
-		baseCom = new DTransform(this);
+		baseCom = new DTransform(this, comIndex);
 		break;
 	case DERenderMesh:
-		baseCom = new DMeshRender(this);
+		baseCom = new DMeshRender(this, comIndex);
 		break;
 	default:
 		break;

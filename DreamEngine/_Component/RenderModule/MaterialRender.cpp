@@ -1,37 +1,38 @@
 #include "MaterialRender.h"
 
-DMateriaRender::DMateriaRender(DGameObject* gameObj)
-	:DBaseCom(L"", COMTYPE::DERenderMaterial, gameObj),
-	m_pMat(nullptr), m_pTexture(nullptr)
+DMateriaRender::DMateriaRender(DGameObject* gameObj, DWORD indexInParent)
+	:DBaseCom(L"", COMTYPE::DERenderMaterial, gameObj, indexInParent),
+	m_pTexture(nullptr)
 {
-
+	D3DMATERIAL9 mat;
+	mat.Ambient = D3DXCOLOR(0.0, 0.0f, 0.0f, 0.0f);
+	mat.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);
+	mat.Specular = D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.0f);
+	mat.Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	mat.Power = 0.0f;
+	SetMaterial(mat);
 }
 
 DMateriaRender::~DMateriaRender()
 {
-	if (m_pMat != nullptr)
-		delete m_pMat;
 
 }
 
 VOID DMateriaRender::Run()
 {
-	if (m_pMat != nullptr)
-		m_d3dDivce->SetMaterial(m_pMat);
+	if (m_isEnabled == FALSE)
+		return;
+
+	m_d3dDivce->SetMaterial(&m_mat);
 }
 
-VOID DMateriaRender::SetMaterial()
+VOID DMateriaRender::SetMaterial(D3DMATERIAL9& mat)
 {
-	if (m_pMat == nullptr)
-		m_pMat = new D3DMATERIAL9;
-	m_pMat->Ambient = D3DXCOLOR(0.0, 0.0f, 0.0f, 0.0f);
-	m_pMat->Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);
-	m_pMat->Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	m_pMat->Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	m_pMat->Power = 0.0f;
+	ZeroMemory(&m_mat, sizeof(D3DMATERIAL9));
+	m_mat = mat;
 }
 
-VOID DMateriaRender::GetMaterial()
+VOID DMateriaRender::GetMaterial(D3DMATERIAL9 & pOut)
 {
-	return VOID();
+	pOut = m_mat;
 }

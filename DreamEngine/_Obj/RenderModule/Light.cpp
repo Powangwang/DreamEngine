@@ -1,139 +1,214 @@
 #include "Light.h"
 #define LIGHTMAX 8
 
-DLight::DLight()
+#define WHITE D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+#define RED D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)
+#define GREEN D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+#define BLUE D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)
+#define BLACK D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)
+
+DWORD DLight::g_lightCount = 0;
+
+DLight::DLight(D3DLIGHTTYPE lightType, BOOL lightEnabled)
+	:m_isNeedApply(TRUE)
 {
+	DLight::g_lightCount++;
+	if (DLight::g_lightCount > LIGHTMAX)
+	{
+		m_isEnabled = -1;
+		return;
+	}
+	AddLight(lightType, lightEnabled);
 }
 
 DLight::~DLight()
 {
+	if(m_isEnabled != -1)
+		DLight::g_lightCount --;
 }
 
 VOID DLight::Run()
 {
-	DGameObject::Run();
+	//DGameObject::Apply();
+
+}
+
+VOID DLight::Apply()
+{
+	if (m_isEnabled == -1)
+		return;
 
 	if (m_isNeedApply)
 	{
-		m_d3dDivce->SetLight(m_curIdx, m_lights[m_curIdx]);
+		m_d3dDivce->SetLight(DLight::g_lightCount, &m_light);
 		m_isNeedApply = FALSE;
 	}
 }
 
-DWORD DLight::AddLight(D3DLIGHTTYPE lightType)
+//增加光照函数未完善
+VOID DLight::AddLight(D3DLIGHTTYPE lightType, BOOL lightEnabled)
 {
-	D3DLIGHT9* tmpLight = new D3DLIGHT9;
-	tmpLight->Type = lightType;
-	m_lights.push_back(tmpLight);
-	return 0;
-}
-
-BOOL DLight::DelLight(DWORD index)
-{
-	if (index < 0 || index >= LIGHTMAX)
-		return FALSE;
-	D3DLIGHT9* deleteLight = m_lights[index];
-	if (deleteLight != nullptr)
+	m_light.Type = lightType;
+	switch (lightType)
 	{
-		delete deleteLight;
-		if(index > 0 && m_curIdx <= LIGHTMAX)
-			m_curIdx++;
-		return TRUE;
+	case D3DLIGHTTYPE::D3DLIGHT_DIRECTIONAL:
+		SetLightDirect(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		break;
+	case D3DLIGHTTYPE::D3DLIGHT_POINT:
+		break;
+	case D3DLIGHTTYPE::D3DLIGHT_SPOT:
+		break;
+	default:
+		break;
 	}
-	return FALSE;
+	SetLightDiffuseColor(WHITE);
+	SetLightSpecularColor(WHITE);
+	SetLightAmbientColor(WHITE); 
+
+	if(lightEnabled == TRUE)
+		LightEnabled(TRUE);
+	m_isNeedApply = TRUE;
 }
 
-BOOL DLight::SetLightDiffuseColor(D3DCOLORVALUE color, BOOL isImmdApply)
+BOOL DLight::LightEnabled(BOOL isEnabled)
 {
-	m_lights[m_curIdx]->Diffuse = color;
+	if (m_isEnabled == -1)
+		return FALSE;
+
+	m_d3dDivce->LightEnable(DLight::g_lightCount, isEnabled);
+	return TRUE;
+}
+
+BOOL DLight::SetLightDiffuseColor(D3DCOLORVALUE & color)
+{
+	m_light.Diffuse = color;
+
+	m_isNeedApply = TRUE;
 	return 0;
 }
 
-BOOL DLight::SetLightSpecularColor(D3DCOLORVALUE color, BOOL isImmdApply)
+BOOL DLight::SetLightSpecularColor(D3DCOLORVALUE & color)
 {
-	m_lights[m_curIdx]->Specular = color;
-	return 0;
+	m_light.Specular = color;
+
+	m_isNeedApply = TRUE;
+	m_d3dDivce->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+	return TRUE;
 }
 
-BOOL DLight::SetLightAmbientColor(D3DCOLORVALUE color, BOOL isImmdApply)
+BOOL DLight::SetLightAmbientColor(D3DCOLORVALUE & color)
 {
-	m_lights[m_curIdx]->Ambient = color;
-	return 0;
+	m_light.Ambient = color;
+
+	m_isNeedApply = TRUE;
+	return TRUE;
 }
 
-BOOL DLight::SetLightRange(FLOAT range, BOOL isImmdApply)
+BOOL DLight::SetLightRange(FLOAT range)
 {
-	D3DLIGHTTYPE lightType = m_lights[m_curIdx]->Type;
+	D3DLIGHTTYPE lightType = m_light.Type;
 	if (lightType == D3DLIGHT_DIRECTIONAL || lightType == D3DLIGHT_FORCE_DWORD)
 		return FALSE;
 	if (range < 0.0f)
 		return FALSE;
-	m_lights[m_curIdx]->Range = range;
+	m_light.Range = range;
+
+	m_isNeedApply = TRUE;
 	return TRUE;
 }
 
-BOOL DLight::SetLightAttenuation(FLOAT attenuation0, FLOAT attenuation1, FLOAT attenuation2, BOOL isImmdApply)
+BOOL DLight::SetLightAttenuation(FLOAT attenuation0, FLOAT attenuation1, FLOAT attenuation2)
 {
-	D3DLIGHTTYPE lightType = m_lights[m_curIdx]->Type;
+	D3DLIGHTTYPE lightType = m_light.Type;
 	if (lightType == D3DLIGHT_DIRECTIONAL || lightType == D3DLIGHT_FORCE_DWORD)
 		return FALSE;
-	m_lights[m_curIdx]->Attenuation0 = attenuation0;
-	m_lights[m_curIdx]->Attenuation1 = attenuation1;
-	m_lights[m_curIdx]->Attenuation2 = attenuation2;
+	m_light.Attenuation0 = attenuation0;
+	m_light.Attenuation1 = attenuation1;
+	m_light.Attenuation2 = attenuation2;
+
+
+	m_isNeedApply = TRUE;
 	return TRUE;
 }
 
-BOOL DLight::SetLightAngle(FLOAT theta, FLOAT phi, BOOL isImmdApply)
+BOOL DLight::SetLightAngle(FLOAT theta, FLOAT phi)
 {
-	D3DLIGHTTYPE lightType = m_lights[m_curIdx]->Type;
-	if (lightType == D3DLIGHT_SPOT)
-	{
-		m_lights[m_curIdx]->Theta = theta;
-		m_lights[m_curIdx]->Phi = phi;
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL DLight::SetLightFalloff(FLOAT falloff, BOOL isImmdApply)
-{
-	D3DLIGHTTYPE lightType = m_lights[m_curIdx]->Type;
-	if (lightType == D3DLIGHT_SPOT)
-	{
-		m_lights[m_curIdx]->Falloff = falloff;
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL DLight::SetLightPosition(float x, float y, float z, BOOL isImmdApply)
-{
-	D3DLIGHTTYPE lightType = m_lights[m_curIdx]->Type;
-	if (lightType == D3DLIGHT_DIRECTIONAL || lightType == D3DLIGHT_FORCE_DWORD)
+	D3DLIGHTTYPE lightType = m_light.Type;
+	if (lightType != D3DLIGHT_SPOT)
 		return FALSE;
-	m_lights[m_curIdx]->Position.x = x;
-	m_lights[m_curIdx]->Position.y = y;
-	m_lights[m_curIdx]->Position.z = z;
+
+	m_light.Theta = theta;
+	m_light.Phi = phi;
+
+	m_isNeedApply = TRUE;
 	return TRUE;
 }
 
-D3DLIGHTTYPE DLight::GetLightType(DWORD index)
+BOOL DLight::SetLightFalloff(FLOAT falloff)
 {
-	if (index < 0 || index >= LIGHTMAX)
-		return (D3DLIGHTTYPE)0;
+	D3DLIGHTTYPE lightType = m_light.Type;
+	if (lightType != D3DLIGHT_SPOT)
+		return FALSE;
 
-	D3DLIGHT9* light = m_lights[m_curIdx];
-	if(light == nullptr) return (D3DLIGHTTYPE)0;
-
-	return m_lights[m_curIdx]->Type;
-}
-
-VOID DLight::SetLightType(DWORD index, D3DLIGHTTYPE lightType)
-{
+	m_light.Falloff = falloff;
 	
+	m_isNeedApply = TRUE;
+	return TRUE;
+}
+
+BOOL DLight::SetLightPos(D3DXVECTOR3 & pos)
+{
+	D3DLIGHTTYPE lightType = m_light.Type;
+	if (lightType == D3DLIGHT_DIRECTIONAL || lightType == D3DLIGHT_FORCE_DWORD)
+		return FALSE;
+	GetTransform()->SetPosition(pos);
+	m_light.Position.x = pos.x;
+	m_light.Position.y = pos.y;
+	m_light.Position.z = pos.z;
+
+	m_isNeedApply = TRUE;
+	return TRUE;
+}
+
+BOOL DLight::SetLightDirect(D3DXVECTOR3 & rot)
+{
+	D3DLIGHTTYPE lightType = m_light.Type;
+	if (lightType != D3DLIGHT_DIRECTIONAL && lightType != D3DLIGHT_SPOT)
+		return FALSE;
+
+	DTransform* transform = GetTransform();
+	if (transform == nullptr) return FALSE;
+	D3DXVECTOR3 front;
+	transform->SetRotation(rot);
+	transform->GetSelfFront(&front);
+	m_light.Direction= front;
+
+	m_isNeedApply = TRUE;
+	return TRUE;
+}
+
+
+
+D3DLIGHTTYPE DLight::GetLightType()
+{
+	return m_light.Type;
+}
+
+VOID DLight::SetLightType(D3DLIGHTTYPE lightType)
+{
+	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
+	AddLight(lightType, TRUE);
 }
 
 DWORD DLight::GetLightCount()
 {
-	return m_lights.size();
+	return DLight::g_lightCount;
+}
+
+VOID DLight::GetLight(D3DLIGHT9 * pOutLit, DWORD litIndex)
+{
+	if (pOutLit == nullptr)
+		return;
+
+	memcpy_s(pOutLit, sizeof(D3DLIGHT9), &m_light, sizeof(D3DLIGHT9));
 }
