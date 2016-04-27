@@ -4,11 +4,11 @@
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
-#define WINDOW_WIDTH    1024
-#define WINDOW_HEIGHT   768
+#define WINDOW_WIDTH    512
+#define WINDOW_HEIGHT   384
 
 // Function Prototypes...
-bool InitializeD3D(HWND hWnd, bool fullscreen);
+bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen);
 bool InitializeObjects();
 void RenderScene();
 void Shutdown();
@@ -17,7 +17,7 @@ void Shutdown();
 Camera* camera;
 DLight* light;
 DGameObject* box;
-
+DInput* input;
 WCHAR buff[1024] = { 0 };
 //ID3DXMesh* Objects[4] = { 0, 0, 0, 0 };
 //D3DXMATRIX  Worlds[4];
@@ -100,7 +100,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 		GetDesktopWindow(), NULL, wc.hInstance, NULL);
 
 	// Initialize Direct3D
-	if (InitializeD3D(hWnd, false))
+	if (InitializeD3D(hInst, hWnd, false))
 	{
 		// Show the window
 		MoveWindow(hWnd, 100, 0, WINDOW_WIDTH, WINDOW_HEIGHT, true);
@@ -131,13 +131,16 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 }
 
 
-bool InitializeD3D(HWND hWnd, bool fullscreen)
+bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen)
 {
 	if (!DDEInitialize::InitializeD3D(hWnd, fullscreen, WINDOW_WIDTH, WINDOW_HEIGHT))
 		return false;
 	if (!InitializeObjects()) 
 		return false;
 
+	input = new DInput(hInst, hWnd);
+	input->CreateDevice(INPUTDEVICE::MouseDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::NonExclusive);
+	input->CreateDevice(INPUTDEVICE::KeyboardDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::Exclusive);
 	//D3DXVECTOR3 pos;
 	//pos.x = 1.11;
 	//pos.y = 2.22;
@@ -197,6 +200,7 @@ bool InitializeObjects()
 	light = new DLight();
 	if (light != nullptr)
 		light->Apply();
+	
 	return true;
 }
 
@@ -205,6 +209,23 @@ void RenderScene()
 {
 	camera->BegineShowObject();
 	box->Run();
+
+	//MOUSESTATE mouseState;
+	//input->GetMouseState();
+	//char msgbuf[256];
+	//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
+	//OutputDebugStringA(msgbuf);
+	//char msgbuf[256];
+	//sprintf_s(msgbuf, "mouse X is %d, Y is %d, LClick is %d, RClick is %d aaaaaa is %d\n", 
+	//	mouseState.lX, mouseState.lY, mouseState.rgbButtons[0], mouseState.rgbButtons[1], mouseState.lZ);
+	//OutputDebugStringA(msgbuf;)
+
+	KEYBOARDINFO keyInfo;
+	input->GetKeyboardState();
+
+	Sleep(100);
+
+
 	//terrain->ShowTerrain(TRUE);
 	//skybox.ShowSkyBox(FALSE);
 	//tp.Show();
