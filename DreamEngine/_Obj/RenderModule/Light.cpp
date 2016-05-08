@@ -10,7 +10,7 @@
 DWORD DLight::g_lightCount = 0;
 
 DLight::DLight(D3DLIGHTTYPE lightType, BOOL lightEnabled)
-	:m_isNeedApply(TRUE)
+	:DGameObject(),m_isNeedApply(TRUE)
 {
 	DLight::g_lightCount++;
 	if (DLight::g_lightCount > LIGHTMAX)
@@ -30,7 +30,10 @@ DLight::~DLight()
 VOID DLight::Run()
 {
 	//DGameObject::Apply();
+	if (m_isEnabled == FALSE)
+		return;
 
+	Apply();
 }
 
 VOID DLight::Apply()
@@ -40,7 +43,7 @@ VOID DLight::Apply()
 
 	if (m_isNeedApply)
 	{
-		m_d3dDivce->SetLight(DLight::g_lightCount, &m_light);
+		DDEInitialize::gRootDevice->SetLight(DLight::g_lightCount, &m_light);
 		m_isNeedApply = FALSE;
 	}
 }
@@ -75,7 +78,7 @@ BOOL DLight::LightEnabled(BOOL isEnabled)
 	if (m_isEnabled == -1)
 		return FALSE;
 
-	m_d3dDivce->LightEnable(DLight::g_lightCount, isEnabled);
+	DDEInitialize::gRootDevice->LightEnable(DLight::g_lightCount, isEnabled);
 	return TRUE;
 }
 
@@ -92,7 +95,7 @@ BOOL DLight::SetLightSpecularColor(D3DCOLORVALUE & color)
 	m_light.Specular = color;
 
 	m_isNeedApply = TRUE;
-	m_d3dDivce->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+	DDEInitialize::gRootDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
 	return TRUE;
 }
 

@@ -1,20 +1,25 @@
 #include "GameObject.h"
 
 DGameObject::DGameObject() 
-	:m_parent(nullptr), m_isEnabled(TRUE)
+	:m_gameObjType(GAMEOBJTYPE::GameObj), m_parent(nullptr), m_isEnabled(TRUE)
 {
-	m_d3dDivce = DDEInitialize::GetDevice();
-	if (m_d3dDivce != nullptr)
-		m_d3dDivce->AddRef();
 	m_coms.push_back(new DTransform(this, m_coms.size()));
 }
 
-DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject* parent)
-	:m_parent(parent), m_isEnabled(TRUE)
+DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, GAMEOBJTYPE goType)
+{
+	DGameObject(pos, rotation, scale, nullptr, GAMEOBJTYPE::GameObj);
+}
+
+DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject * parent)
+{
+	DGameObject(pos, rotation, scale, parent, GAMEOBJTYPE::GameObj);
+}
+
+DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject* parent, GAMEOBJTYPE goType)
+	:m_gameObjType(goType), m_parent(parent), m_isEnabled(TRUE)
 {
 	m_coms.push_back(new DTransform(pos, rotation, scale, this, m_coms.size()));
-	if (m_d3dDivce != nullptr)
-		m_d3dDivce->Release();
 }
 
 DGameObject::~DGameObject()
@@ -46,7 +51,7 @@ DBaseCom* DGameObject::AddComponent(COMTYPE comType)
 	int comIndex = m_coms.size();
 	switch (comType)
 	{
-	case Unkown:
+	case DERenderUnkown:
 		break;
 	case DERenderTransform:
 		baseCom = new DTransform(this, comIndex);

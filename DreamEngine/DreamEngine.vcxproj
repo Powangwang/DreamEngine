@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Microsoft DirectX SDK\Include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Microsoft DirectX SDK\Include;D:\Workspace\DreamEngine\DreamEngine\_CommUtil;D:\Workspace\DreamEngine\DreamEngine\_Component;D:\Workspace\DreamEngine\DreamEngine\_Obj;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Microsoft DirectX SDK\Lib\x86;D:\Microsoft DirectX SDK\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,7 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="_CommAction\DEInitialize.cpp" />
+    <ClCompile Include="_CommUtil\DEInitialize.cpp" />
     <ClCompile Include="_Component\BaseCom.cpp" />
     <ClCompile Include="_Component\RenderModule\MaterialRender.cpp" />
     <ClCompile Include="_Component\RenderModule\MeshRender.cpp" />
@@ -161,7 +161,7 @@
     <ClCompile Include="_Obj\RenderModule\Light.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="_CommAction\DEInitialize.h" />
+    <ClInclude Include="_CommUtil\DEInitialize.h" />
     <ClInclude Include="_Component\BaseCom.h" />
     <ClInclude Include="_Component\CommComponent.h" />
     <ClInclude Include="_Component\RenderModule\CommRenderHead.h" />

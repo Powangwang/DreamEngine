@@ -10,11 +10,11 @@ public:
 	VOID Run();
 
 public:
-	VOID SetMaterial(D3DMATERIAL9& mat);
-	VOID GetMaterial(D3DMATERIAL9& pOut);
-	VOID SetTexture(LPDIRECT3DTEXTURE9 & texture);
-	VOID GetTexture(LPDIRECT3DTEXTURE9 & pOut);
-private :
+	//VOID SetMaterial(D3DMATERIAL9& mat);
+	//VOID GetMaterial(D3DMATERIAL9& pOut);
+	//VOID SetTexture(LPDIRECT3DTEXTURE9 & texture);
+	//VOID GetTexture(LPDIRECT3DTEXTURE9 & pOut);
+public :
 	D3DMATERIAL9  m_mat;
 	LPDIRECT3DTEXTURE9 m_texture;
 };

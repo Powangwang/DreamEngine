@@ -29,7 +29,9 @@ public:
 	VOID Run();
 
 	VOID QuaternionToEuler(D3DXVECTOR3* vOut, D3DXQUATERNION* q);
+
 private :
+	VOID SetOtherOption();
 	VOID RotationEulerToQuaternion(D3DXQUATERNION * qOut, D3DXVECTOR3 & rotation);
 	//VOID VectorEulerToQuaternion(D3DXVECTOR3* v, float euler, D3DXQUATERNION* q);
 
@@ -37,6 +39,4 @@ private:
 	D3DXVECTOR3 m_position;
 	D3DXVECTOR3 m_scale;
 	D3DXQUATERNION m_rQuat;		//存储旋转信息
-	//D3DXVECTOR3 m_rotation;
-	//D3DXMATRIX m_psMatrix;			//存贮位置和缩放信息
 };

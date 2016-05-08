@@ -29,28 +29,28 @@ VOID DMateriaRender::Run()
 	if (m_isEnabled == FALSE)
 		return;
 
-	m_d3dDivce->SetMaterial(&m_mat);
+	DDEInitialize::gRootDevice->SetMaterial(&m_mat);
 	if(m_texture != nullptr)
-		m_d3dDivce->SetTexture(0, m_texture);
+		DDEInitialize::gRootDevice->SetTexture(0, m_texture);
 }
 
-VOID DMateriaRender::SetMaterial(D3DMATERIAL9& mat)
-{
-	ZeroMemory(&m_mat, sizeof(D3DMATERIAL9));
-	m_mat = mat;
-}
-
-VOID DMateriaRender::GetMaterial(D3DMATERIAL9 & pOut)
-{
-	pOut = m_mat;
-}
-
-VOID DMateriaRender::SetTexture(LPDIRECT3DTEXTURE9 & texture)
-{
-	m_texture = texture;
-}
-
-VOID DMateriaRender::GetTexture(LPDIRECT3DTEXTURE9 & pOut)
-{
-	pOut = m_texture;
-}
+//VOID DMateriaRender::SetMaterial(D3DMATERIAL9& mat)
+//{
+//	ZeroMemory(&m_mat, sizeof(D3DMATERIAL9));
+//	m_mat = mat;
+//}
+//
+//VOID DMateriaRender::GetMaterial(D3DMATERIAL9 & pOut)
+//{
+//	pOut = m_mat;
+//}
+//
+//VOID DMateriaRender::SetTexture(LPDIRECT3DTEXTURE9 & texture)
+//{
+//	m_texture = texture;
+//}
+//
+//VOID DMateriaRender::GetTexture(LPDIRECT3DTEXTURE9 & pOut)
+//{
+//	pOut = m_texture;
+//}

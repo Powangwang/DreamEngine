@@ -27,7 +27,7 @@ DMeshRender::~DMeshRender()
 
 BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 {
-	if (FAILED(D3DXCreateBox(m_d3dDivce, size.x, size.y, size.z, &m_pMess, NULL)))
+	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, size.x, size.y, size.z, &m_pMess, NULL)))
 		return FALSE;
 
 	m_isEnabled = TRUE;
@@ -37,7 +37,7 @@ BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 
 BOOL DMeshRender::CreateMeshSphere(FLOAT radius)
 {
-	if (FAILED(D3DXCreateSphere(m_d3dDivce, radius, 32, 32, &m_pMess, NULL)))
+	if (FAILED(D3DXCreateSphere(DDEInitialize::gRootDevice, radius, 32, 32, &m_pMess, NULL)))
 		return FALSE;
 
 	m_isEnabled = TRUE;
@@ -47,7 +47,7 @@ BOOL DMeshRender::CreateMeshSphere(FLOAT radius)
 
 BOOL DMeshRender::CreateMeshTeapot()
 {
-	if (FAILED(D3DXCreateTeapot(m_d3dDivce, &m_pMess, NULL)))
+	if (FAILED(D3DXCreateTeapot(DDEInitialize::gRootDevice, &m_pMess, NULL)))
 		return FALSE;
 
 	m_isEnabled = TRUE;
@@ -57,7 +57,7 @@ BOOL DMeshRender::CreateMeshTeapot()
 
 BOOL DMeshRender::CreateMeshFromFileX(LPCWSTR pFileName, DWORD options)
 {
-	if (FAILED(D3DXLoadMeshFromX(pFileName, options, m_d3dDivce, 
+	if (FAILED(D3DXLoadMeshFromX(pFileName, options, DDEInitialize::gRootDevice, 
 		&m_ppAdjacency, &m_ppMaterials, &m_ppEffectInstances, &m_pNumMaterials, &m_pMess)))
 		return FALSE;
 
@@ -65,7 +65,7 @@ BOOL DMeshRender::CreateMeshFromFileX(LPCWSTR pFileName, DWORD options)
 	LPDIRECT3DTEXTURE9 tmpTexture = nullptr;
 	for (DWORD matRenderIndex = 0; matRenderIndex < m_pNumMaterials; matRenderIndex++)
 	{
-		if (!FAILED(D3DXCreateTextureFromFileA(m_d3dDivce, pMtrls[matRenderIndex].pTextureFilename, &tmpTexture)))
+		if (!FAILED(D3DXCreateTextureFromFileA(DDEInitialize::gRootDevice, pMtrls[matRenderIndex].pTextureFilename, &tmpTexture)))
 		{
 			DMateriaRender* matRender = new DMateriaRender(m_gameObj, 0, pMtrls[matRenderIndex].MatD3D, tmpTexture);
 			m_matRenders.push_back(matRender);
@@ -79,8 +79,8 @@ VOID DMeshRender::Run()
 {
 	if (!m_isEnabled)
 		return ;
-	m_d3dDivce->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-	m_d3dDivce->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	DDEInitialize::gRootDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	DDEInitialize::gRootDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	for (DWORD runIndex = 0; runIndex < m_pNumMaterials; runIndex++)
 	{

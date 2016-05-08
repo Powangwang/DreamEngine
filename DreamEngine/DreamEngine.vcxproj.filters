@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\CommAction">
-      <UniqueIdentifier>{55810c35-e357-4572-ad45-07a1ce9c57b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\CommAction">
-      <UniqueIdentifier>{b64b6a97-b4d4-48f4-bd76-1a2f4b6d439d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\Component">
       <UniqueIdentifier>{b0961824-a550-419f-a862-59641cd6a361}</UniqueIdentifier>
     </Filter>
@@ -43,13 +37,16 @@
     <Filter Include="源文件\Obj\RenderModule">
       <UniqueIdentifier>{c8e01619-9ba6-4116-8c52-c93e6b5e50cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\CommUtil">
+      <UniqueIdentifier>{55810c35-e357-4572-ad45-07a1ce9c57b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CommUtil">
+      <UniqueIdentifier>{b64b6a97-b4d4-48f4-bd76-1a2f4b6d439d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="_CommAction\DEInitialize.cpp">
-      <Filter>源文件\CommAction</Filter>
     </ClCompile>
     <ClCompile Include="_Component\RenderModule\MeshRender.cpp">
       <Filter>源文件\Component\RenderModule</Filter>
@@ -75,11 +72,11 @@
     <ClCompile Include="_Obj\Input.cpp">
       <Filter>源文件\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="_CommUtil\DEInitialize.cpp">
+      <Filter>源文件\CommUtil</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="_CommAction\DEInitialize.h">
-      <Filter>头文件\CommAction</Filter>
-    </ClInclude>
     <ClInclude Include="_Component\RenderModule\MeshRender.h">
       <Filter>头文件\Component\RenderModule</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="_Obj\Input.h">
       <Filter>头文件\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="_CommUtil\DEInitialize.h">
+      <Filter>头文件\CommUtil</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

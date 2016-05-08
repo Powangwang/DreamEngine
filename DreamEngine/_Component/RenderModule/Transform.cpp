@@ -1,5 +1,6 @@
 #include "Transform.h"
-
+//#include "RenderModule/GameObject.h"
+#include "RenderModule/Camera.h"
 DTransform::DTransform(DGameObject* gameObj, DWORD indexInParent):
 	DBaseCom(L"", COMTYPE::DERenderTransform, gameObj, indexInParent)
 {
@@ -24,13 +25,6 @@ DTransform::DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& sca
 	m_position = pos;
 	m_scale = scale;
 	RotationEulerToQuaternion(&m_rQuat, rotation);
-	//D3DXMatrixIdentity(&m_psMatrix);
-
-	//D3DXMATRIX matrix;
-	//D3DXMatrixTranslation(&matrix, pos.x, pos.y, pos.z);
-	//m_psMatrix *= matrix;
-	//D3DXMatrixScaling(&matrix, scale.x, scale.y, scale.z);
-	//m_psMatrix *= matrix;
 }
 
 DTransform::~DTransform()
@@ -56,6 +50,8 @@ VOID DTransform::Translate(D3DXVECTOR3 & translation, Space space)
 		m_position.y = posMatrix._42;
 		m_position.z = posMatrix._43;
 	}
+
+	SetOtherOption();
 }
 
 VOID DTransform::Rotate(D3DXVECTOR3 & eulerAngles, Space space)
@@ -88,16 +84,22 @@ VOID DTransform::Rotate(D3DXVECTOR3 & eulerAngles, Space space)
 		m_rQuat = rQuat * m_rQuat;
 	}
 	D3DXQuaternionNormalize(&m_rQuat, &m_rQuat);
+
+	SetOtherOption();
 }
 
 VOID DTransform::SetPosition(D3DXVECTOR3 & pos)
 {
 	m_position = pos;
+
+	SetOtherOption();
 }
 
 VOID DTransform::SetRotation(D3DXVECTOR3 & eulerAngles)
 {
 	RotationEulerToQuaternion(&m_rQuat, eulerAngles);
+
+	SetOtherOption();
 }
 
 VOID DTransform::SetScale(D3DXVECTOR3 & scale)
@@ -173,7 +175,7 @@ VOID DTransform::GetScale(D3DXVECTOR3 * sOut)
 
 VOID DTransform::Run()
 {
-	if (m_d3dDivce == NULL)
+	if (DDEInitialize::gRootDevice == NULL)
 		return;
 	D3DXMATRIX tMatrix;
 	D3DXMATRIX rMatrix;
@@ -187,7 +189,7 @@ VOID DTransform::Run()
 	tMatrix._42 = m_position.y;
 	tMatrix._43 = m_position.z;
 	tMatrix = rMatrix * tMatrix;
-	m_d3dDivce->SetTransform(D3DTS_WORLD, &tMatrix);
+	DDEInitialize::gRootDevice->SetTransform(D3DTS_WORLD, &tMatrix);
 }
 
 VOID DTransform::RotationEulerToQuaternion(D3DXQUATERNION * qOut, D3DXVECTOR3 & rotation)
@@ -232,4 +234,12 @@ VOID DTransform::QuaternionToEuler(D3DXVECTOR3* vOut, D3DXQUATERNION* q)
 	vOut->x = float(atan2(2 * (q2*q3 + q0*q1), (q0*q0 - q1*q1 - q2*q2 + q3*q3)));
 	vOut->y = float(asin(-2 * (q1*q3 - q0*q2)));
 	vOut->z = float(atan2(2 * (q1*q2 + q0*q3), (q0*q0 + q1*q1 - q2*q2 - q3*q3)));
+}
+
+VOID DTransform::SetOtherOption()
+{
+	if (m_gameObj->GetType() == GAMEOBJTYPE::GameObjCamera)
+	{
+		((DCamera*)m_gameObj)->m_isApply = DCamera::APPLYTYPE::ApplyView;
+	}
 }

@@ -1,5 +1,6 @@
 #include "DEInitialize.h"
-LPDIRECT3DDEVICE9 DDEInitialize::g_device = nullptr;
+
+LPDIRECT3DDEVICE9 DDEInitialize::gRootDevice = nullptr;
 DDEInitialize::DDEInitialize()
 {
 	//InitializeD3D(hWnd, false, 800, 600);
@@ -58,7 +59,7 @@ BOOL DDEInitialize::InitializeD3D(HWND hWnd, bool fullscreen, UINT width, UINT h
 
 	// Create the D3DDevice
 	if (FAILED(d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &DDEInitialize::g_device)))
+		D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &DDEInitialize::gRootDevice)))
 		return FALSE;
 
 	d3d->Release();
@@ -67,8 +68,8 @@ BOOL DDEInitialize::InitializeD3D(HWND hWnd, bool fullscreen, UINT width, UINT h
 
 VOID DDEInitialize::EndInitD3D()
 {
-	if (DDEInitialize::g_device != NULL)
-		while (DDEInitialize::g_device->Release() != 0);
+	if (DDEInitialize::gRootDevice != NULL)
+		while (DDEInitialize::gRootDevice->Release() != 0);
 
-	DDEInitialize::g_device = NULL;
+	DDEInitialize::gRootDevice = NULL;
 }

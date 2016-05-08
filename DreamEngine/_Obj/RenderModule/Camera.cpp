@@ -1,6 +1,6 @@
 #include"Camera.h"
 //#include "../_CommAction/DEInitialize.h"
-Camera::Camera() : DGameObject(),
+DCamera::DCamera() : DGameObject(),
 	m_viewAngle(VIEW_ANGLE),
 	m_viewWidth(VIEW_WIDTH), m_viewHeight(VIEW_HEIGHT),
 	m_displayType(DISPLAYTYPE::PerspectiveFovLH), m_zn(0.1f), m_zf(1.0f)
@@ -10,20 +10,20 @@ Camera::Camera() : DGameObject(),
 	if (!SetCameraProjection()) return ;
 	if (!SetCameraView()) return ;
 }
-Camera::Camera(float viewAngle, float viewWidth, float viewHeight, DISPLAYTYPE displayType, float zn, float zf,
-	D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale):
-	DGameObject(pos, rotation, scale), 
+DCamera::DCamera(float viewAngle, float viewWidth, float viewHeight, DISPLAYTYPE displayType, float zn, float zf,
+	D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation):
+	DGameObject(pos, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f),GAMEOBJTYPE::GameObjCamera), 
 	m_viewAngle(viewAngle), m_viewWidth(viewWidth), m_viewHeight(viewHeight),
 	m_displayType(displayType),m_zn(zn),m_zf(zf)
 {
 	if (!SetCameraProjection()) return ;
 	if (!SetCameraView()) return ;
 }
-Camera::~Camera()
+DCamera::~DCamera()
 {
 }
 
-BOOL Camera::SetCameraProjection()
+BOOL DCamera::SetCameraProjection()
 {
 	if (!m_isEnabled)
 		return FALSE;
@@ -33,12 +33,12 @@ BOOL Camera::SetCameraProjection()
 		D3DXMatrixPerspectiveFovLH(&projection, D3DX_PI * m_viewAngle, m_viewWidth / m_viewHeight, m_zn, m_zf);
 	else if (m_displayType == OrthoLH)
 		D3DXMatrixOrthoLH(&projection, m_viewWidth, m_viewHeight, 0.1f, 1000.0f);
-	if (FAILED(m_d3dDivce->SetTransform(D3DTS_PROJECTION, &projection)))
+	if (FAILED(DDEInitialize::gRootDevice->SetTransform(D3DTS_PROJECTION, &projection)))
 		return FALSE;
 	return TRUE;
 }
 
-BOOL Camera::SetCameraView()
+BOOL DCamera::SetCameraView()
 {
 	if (!m_isEnabled)
 		return FALSE;
@@ -56,12 +56,12 @@ BOOL Camera::SetCameraView()
 	transform->GetSelfUp(&lookUp);
 	lookAt += pos;					//摄像机看向的坐标点
 	D3DXMatrixLookAtLH(&viewMatrix, &pos, &lookAt, &lookUp);
-	if (FAILED(m_d3dDivce->SetTransform(D3DTS_VIEW, &viewMatrix)))
+	if (FAILED(DDEInitialize::gRootDevice->SetTransform(D3DTS_VIEW, &viewMatrix)))
 		return FALSE;
 	return TRUE;
 }
 
-VOID Camera::GetViewMatrix(D3DXMATRIX* viewMatrix)
+VOID DCamera::GetViewMatrix(D3DXMATRIX* viewMatrix)
 {
 	if (viewMatrix == nullptr)
 		return;
@@ -75,41 +75,84 @@ VOID Camera::GetViewMatrix(D3DXMATRIX* viewMatrix)
 	//D3DXMatrixRotationQuaternion(&rMatrix, &rQuat);
 }
 
-BOOL Camera::BegineShowObject()
+BOOL DCamera::BegineShowObject()
 {
 	if (!m_isEnabled)
 		return FALSE;
-	m_d3dDivce->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
-	m_d3dDivce->BeginScene();
+	DDEInitialize::gRootDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+	DDEInitialize::gRootDevice->BeginScene();
 	return TRUE;
 }
-BOOL Camera::EndShowObject()
+BOOL DCamera::EndShowObject()
 {
 	if (!m_isEnabled)
 		return FALSE;
-	m_d3dDivce->EndScene();
-	m_d3dDivce->Present(NULL, NULL, NULL, NULL);
+	DDEInitialize::gRootDevice->EndScene();
+	DDEInitialize::gRootDevice->Present(NULL, NULL, NULL, NULL);
 	return TRUE;
 }
 
-BOOL Camera::SetViewPort(const D3DVIEWPORT9* pViewPort)
+BOOL DCamera::SetViewPort(const D3DVIEWPORT9* pViewPort)
 {
-	m_d3dDivce->SetViewport(pViewPort);
+	DDEInitialize::gRootDevice->SetViewport(pViewPort);
 	return TRUE;
 }
 
-VOID Camera::Apply()
+VOID DCamera::Apply()
 {
-	if (m_isApply == APPLYTYPE::ApplyProject)
+	if (m_isApply & APPLYTYPE::ApplyNone)
+		return;
+	if (m_isApply & APPLYTYPE::ApplyProject)
 		SetCameraProjection();
-	else if (m_isApply == APPLYTYPE::ApplyView)
+	if (m_isApply & APPLYTYPE::ApplyView)
 		SetCameraView();
 
+	m_isApply = ApplyNone;
+
 }
 
-VOID Camera::Run()
+VOID DCamera::SetProjectAngle(float angle)
 {
-	return VOID();
+	m_viewAngle = angle; 
+	m_isApply = ApplyProject; 
+}
+
+VOID DCamera::SetProjectWidth(float width)
+{
+	m_viewWidth = width; 
+	m_isApply = ApplyProject;
+}
+
+VOID DCamera::SetProjectHeight(float height)
+{
+	m_viewHeight = height; 
+	m_isApply = ApplyProject;
+}
+
+VOID DCamera::SetCameraType(DISPLAYTYPE type)
+{
+	m_displayType = type; 
+	m_isApply = ApplyProject;
+}
+
+VOID DCamera::SetCameraZn(FLOAT zn)
+{
+	m_zn = zn; 
+	m_isApply = ApplyProject;
+}
+
+VOID DCamera::SetCameraZf(FLOAT zf)
+{
+	m_zf = zf; 
+	m_isApply = ApplyProject;
+}
+
+VOID DCamera::Run()
+{
+	if (m_isEnabled == FALSE)
+		return;
+
+	Apply();
 }
 
 

@@ -12,7 +12,6 @@ public:
 	DLight(D3DLIGHTTYPE lightType = D3DLIGHTTYPE::D3DLIGHT_DIRECTIONAL, BOOL lightEnabled = TRUE);
 	~DLight();
 	virtual VOID Run();
-	virtual VOID Apply();
 	BOOL LightEnabled(BOOL isEnabled);
 
 	BOOL SetLightDiffuseColor(D3DCOLORVALUE & color);
@@ -34,6 +33,7 @@ public:
 
 private:
 	VOID AddLight(D3DLIGHTTYPE lightType, BOOL lightEnabled );
+	virtual VOID Apply();
 
 private:
 	//map<string, D3DLIGHT9*> m_light;

@@ -9,7 +9,7 @@ using namespace std;
 class DGameObject;
 enum  COMTYPE
 {
-	Unkown,
+	DERenderUnkown,
 	DERenderTransform,
 	DERenderMesh,
 	DERenderMaterial
@@ -27,7 +27,6 @@ public:
 	COMTYPE GetComponentType();
 
 protected:
-	LPDIRECT3DDEVICE9 m_d3dDivce;
 	wstring m_comName;
 	COMTYPE m_comType;
 	DGameObject* m_gameObj;

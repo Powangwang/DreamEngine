@@ -1,5 +1,7 @@
 //#include "_CommAction\DEInitialize.h"
-//#include "_Obj\RenderModule\Camera.h"
+//#include "_Obj\RenderModule\DCamera.h"
+
+#include "_CommUtil/DEInitialize.h"
 #include "_Obj\CommObj.h"
 
 #define WINDOW_CLASS    L"UGPDX"
@@ -14,7 +16,7 @@ void RenderScene();
 void Shutdown();
 
 //Teapot tp;
-Camera* camera;
+DCamera* camera;
 DLight* light;
 DGameObject* box;
 DInput* input;
@@ -184,9 +186,8 @@ bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen)
 
 bool InitializeObjects()
 {
-	camera = new Camera();
+	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	camera->Apply();
 
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
@@ -198,8 +199,6 @@ bool InitializeObjects()
 	}
 	
 	light = new DLight();
-	if (light != nullptr)
-		light->Apply();
 	
 	return true;
 }
@@ -207,6 +206,9 @@ bool InitializeObjects()
 
 void RenderScene()
 {
+	camera->Run();
+	light->Run();
+
 	camera->BegineShowObject();
 	box->Run();
 
