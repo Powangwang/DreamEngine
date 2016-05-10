@@ -159,6 +159,7 @@
     <ClCompile Include="_Obj\RenderModule\Camera.cpp" />
     <ClCompile Include="_Obj\RenderModule\GameObject.cpp" />
     <ClCompile Include="_Obj\RenderModule\Light.cpp" />
+    <ClCompile Include="_Obj\RenderModule\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_CommUtil\DEInitialize.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="_Obj\CommObj.h" />
     <ClInclude Include="_Obj\Input.h" />
     <ClInclude Include="_Obj\RenderModule\Camera.h" />
+    <ClInclude Include="_Obj\RenderModule\Terrain.h" />
     <ClInclude Include="_Obj\RenderModule\GameObject.h" />
     <ClInclude Include="_Obj\RenderModule\Light.h" />
   </ItemGroup>

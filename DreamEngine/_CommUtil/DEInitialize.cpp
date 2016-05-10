@@ -16,7 +16,7 @@ BOOL DDEInitialize::InitializeD3D(HWND hWnd, bool fullscreen, UINT width, UINT h
 	LPDIRECT3D9 d3d;
 	D3DDISPLAYMODE displayMode;
 	d3d = Direct3DCreate9(D3D_SDK_VERSION);
-	if (d3d == NULL)
+	if (d3d == nullptr)
 		return FALSE;
 
 	// Get the desktop display mode.
@@ -34,7 +34,7 @@ BOOL DDEInitialize::InitializeD3D(HWND hWnd, bool fullscreen, UINT width, UINT h
 	if (d3d->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, displayMode.Format, !fullscreen,
 		D3DMULTISAMPLE_8_SAMPLES,
-		NULL) == D3D_OK) multiType = D3DMULTISAMPLE_8_SAMPLES;
+		nullptr) == D3D_OK) multiType = D3DMULTISAMPLE_8_SAMPLES;
 
 	if (fullscreen)
 	{
@@ -68,8 +68,8 @@ BOOL DDEInitialize::InitializeD3D(HWND hWnd, bool fullscreen, UINT width, UINT h
 
 VOID DDEInitialize::EndInitD3D()
 {
-	if (DDEInitialize::gRootDevice != NULL)
+	if (DDEInitialize::gRootDevice != nullptr)
 		while (DDEInitialize::gRootDevice->Release() != 0);
 
-	DDEInitialize::gRootDevice = NULL;
+	DDEInitialize::gRootDevice = nullptr;
 }

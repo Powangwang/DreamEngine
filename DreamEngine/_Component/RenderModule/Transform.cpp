@@ -109,7 +109,7 @@ VOID DTransform::SetScale(D3DXVECTOR3 & scale)
 
 VOID DTransform::GetSelfFront(D3DXVECTOR3 * vOut)
 {
-	if (vOut == NULL)
+	if (vOut == nullptr)
 		return;
 
 	D3DXMATRIX rMatrix;
@@ -120,7 +120,7 @@ VOID DTransform::GetSelfFront(D3DXVECTOR3 * vOut)
 
 VOID DTransform::GetSelfUp(D3DXVECTOR3 * vOut)
 {
-	if (vOut == NULL)
+	if (vOut == nullptr)
 		return;
 
 	D3DXMATRIX rMatrix;
@@ -131,7 +131,7 @@ VOID DTransform::GetSelfUp(D3DXVECTOR3 * vOut)
 
 VOID DTransform::GetSelfRight(D3DXVECTOR3 * vOut)
 {
-	if (vOut == NULL)
+	if (vOut == nullptr)
 		return;
 
 	D3DXMATRIX rMatrix;
@@ -144,7 +144,7 @@ VOID DTransform::GetSelfRight(D3DXVECTOR3 * vOut)
 //space.Local 表示为相对于父对象的位置，space.World 表示相对于世界坐标系的位置
 VOID DTransform::GetPosition(D3DXVECTOR3 * pOut, Space space)
 {
-	if (pOut == NULL)
+	if (pOut == nullptr)
 		return;
 
 	//D3DXMATRIX rMatrix;
@@ -167,7 +167,7 @@ VOID DTransform::GetPosition(D3DXVECTOR3 * pOut, Space space)
 
 VOID DTransform::GetScale(D3DXVECTOR3 * sOut)
 {
-	if (sOut == NULL)
+	if (sOut == nullptr)
 		return;
 	*sOut = m_scale;
 
@@ -175,7 +175,7 @@ VOID DTransform::GetScale(D3DXVECTOR3 * sOut)
 
 VOID DTransform::Run()
 {
-	if (DDEInitialize::gRootDevice == NULL)
+	if (DDEInitialize::gRootDevice == nullptr)
 		return;
 	D3DXMATRIX tMatrix;
 	D3DXMATRIX rMatrix;
@@ -194,7 +194,7 @@ VOID DTransform::Run()
 
 VOID DTransform::RotationEulerToQuaternion(D3DXQUATERNION * qOut, D3DXVECTOR3 & rotation)
 {
-	if (qOut == NULL)
+	if (qOut == nullptr)
 		return;
 
 	D3DXVECTOR3 vX(1, 0, 0);
@@ -240,6 +240,8 @@ VOID DTransform::SetOtherOption()
 {
 	if (m_gameObj->GetType() == GAMEOBJTYPE::GameObjCamera)
 	{
-		((DCamera*)m_gameObj)->m_isApply = DCamera::APPLYTYPE::ApplyView;
+		DWORD* applyType = (DWORD*)&(((DCamera*)m_gameObj)->m_isApply);
+		//((DCamera*)m_gameObj)->m_isApply = DCamera::APPLYTYPE::ApplyView;
+		*applyType |= DCamera::APPLYTYPE::ApplyView;
 	}
 }

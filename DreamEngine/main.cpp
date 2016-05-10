@@ -1,8 +1,8 @@
 //#include "_CommAction\DEInitialize.h"
 //#include "_Obj\RenderModule\DCamera.h"
 
-#include "_CommUtil/DEInitialize.h"
-#include "_Obj\CommObj.h"
+#include "DEInitialize.h"
+#include "CommObj.h"
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
@@ -16,6 +16,7 @@ void RenderScene();
 void Shutdown();
 
 //Teapot tp;
+DTerrain* terrain;
 DCamera* camera;
 DLight* light;
 DGameObject* box;
@@ -92,14 +93,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 {
 	// Register the window class
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
-		GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
-		WINDOW_CLASS, NULL };
+		GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr,
+		WINDOW_CLASS, nullptr };
 	RegisterClassEx(&wc);
 
 	// Create the application's window
 	HWND hWnd = CreateWindow(WINDOW_CLASS, WINDOW_NAME, WS_OVERLAPPEDWINDOW,
 		100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
-		GetDesktopWindow(), NULL, wc.hInstance, NULL);
+		GetDesktopWindow(), nullptr, wc.hInstance, nullptr);
 
 	// Initialize Direct3D
 	if (InitializeD3D(hInst, hWnd, false))
@@ -115,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE prevhInst, LPSTR cmdLine, int show
 
 		while (msg.message != WM_QUIT)
 		{
-			if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+			if (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -188,15 +189,15 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
+	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 10.0f, -15.0f), Space::World);
+
+	terrain = new DTerrain(64, 64, 10, 2);
+	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	if (meshRender != nullptr)
-	{
-		//meshRender->CreateMeshSphere(1.0f);
-		//meshRender->CreateMeshBox(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-		meshRender->CreateMeshTeapot();
-	}
+	meshRender->CreateMeshTeapot();
+
 	
 	light = new DLight();
 	
@@ -208,7 +209,7 @@ void RenderScene()
 {
 	camera->Run();
 	light->Run();
-
+	terrain->Run();
 	camera->BegineShowObject();
 	box->Run();
 
@@ -223,9 +224,24 @@ void RenderScene()
 	//OutputDebugStringA(msgbuf;)
 
 	KEYBOARDINFO keyInfo;
-	input->GetKeyboardState();
+	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPress;
+	if(input->GetKeyboardState())
+	{
+		float angle = -0.1f;
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_A;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			camera->GetTransform()->Rotate(D3DXVECTOR3(angle, 0.0f, 0.0f), Space::Local);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_D;
+		if(input->MatchKeyboardState(keyInfo))
+		{
+			camera->GetTransform()->Rotate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::Local);
+		}
+	}
 
-	Sleep(100);
+
+	//Sleep(100);
 
 
 	//terrain->ShowTerrain(TRUE);

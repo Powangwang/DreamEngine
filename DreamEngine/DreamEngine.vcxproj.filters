@@ -75,6 +75,9 @@
     <ClCompile Include="_CommUtil\DEInitialize.cpp">
       <Filter>源文件\CommUtil</Filter>
     </ClCompile>
+    <ClCompile Include="_Obj\RenderModule\Terrain.cpp">
+      <Filter>源文件\Obj\RenderModule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Component\RenderModule\MeshRender.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="_CommUtil\DEInitialize.h">
       <Filter>头文件\CommUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\RenderModule\Terrain.h">
+      <Filter>头文件\Obj\RenderModule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

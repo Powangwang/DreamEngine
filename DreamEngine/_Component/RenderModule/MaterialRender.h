@@ -15,6 +15,6 @@ public:
 	//VOID SetTexture(LPDIRECT3DTEXTURE9 & texture);
 	//VOID GetTexture(LPDIRECT3DTEXTURE9 & pOut);
 public :
-	D3DMATERIAL9  m_mat;
-	LPDIRECT3DTEXTURE9 m_texture;
+	D3DMATERIAL9  material;
+	LPDIRECT3DTEXTURE9 texture;
 };

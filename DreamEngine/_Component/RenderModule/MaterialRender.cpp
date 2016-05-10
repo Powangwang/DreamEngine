@@ -2,26 +2,26 @@
 
 DMateriaRender::DMateriaRender(DGameObject* gameObj, DWORD indexInParent)
 	:DBaseCom(L"", COMTYPE::DERenderMaterial, gameObj, indexInParent),
-	m_texture(nullptr)
+	texture(nullptr)
 {
-	m_mat.Ambient = D3DXCOLOR(0.0, 0.0f, 0.0f, 0.0f);
-	m_mat.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);
-	m_mat.Specular = D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.0f);
-	m_mat.Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	m_mat.Power = 0.0f;
+	material.Ambient = D3DXCOLOR(0.0, 0.0f, 0.0f, 0.0f);
+	material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);
+	material.Specular = D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.0f);
+	material.Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	material.Power = 0.0f;
 }
 
 DMateriaRender::DMateriaRender(DGameObject * gameObj, DWORD indexInParent, D3DMATERIAL9 & mat, LPDIRECT3DTEXTURE9 & texture)
 	: DBaseCom(L"", COMTYPE::DERenderMaterial, gameObj, indexInParent),
-	m_mat(mat), m_texture(texture)
+	material(mat), texture(texture)
 {
 
 }
 
 DMateriaRender::~DMateriaRender()
 {
-	if (m_texture != nullptr)
-		m_texture->Release();
+	if (texture != nullptr)
+		texture->Release();
 }
 
 VOID DMateriaRender::Run()
@@ -29,9 +29,9 @@ VOID DMateriaRender::Run()
 	if (m_isEnabled == FALSE)
 		return;
 
-	DDEInitialize::gRootDevice->SetMaterial(&m_mat);
-	if(m_texture != nullptr)
-		DDEInitialize::gRootDevice->SetTexture(0, m_texture);
+	DDEInitialize::gRootDevice->SetMaterial(&material);
+	if(texture != nullptr)
+		DDEInitialize::gRootDevice->SetTexture(0, texture);
 }
 
 //VOID DMateriaRender::SetMaterial(D3DMATERIAL9& mat)

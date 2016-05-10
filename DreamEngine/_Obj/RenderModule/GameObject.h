@@ -14,7 +14,7 @@ enum GAMEOBJTYPE
 class DGameObject
 {
 public :
-	DGameObject();
+	DGameObject(GAMEOBJTYPE goType = GAMEOBJTYPE::GameObj);
 	DGameObject(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, GAMEOBJTYPE goType = GAMEOBJTYPE::GameObj);
 
 	DGameObject(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* parent = nullptr);

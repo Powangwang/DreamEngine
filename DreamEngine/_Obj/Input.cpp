@@ -30,7 +30,7 @@ DInput::~DInput()
 
 BOOL DInput::CreateDevice(INPUTDEVICE inputDevice, DWORD cooperaFlag)
 {
-	DirectInput8Create(m_hIns, DIRECTINPUT_HEADER_VERSION, IID_IDirectInput8, (VOID**)&m_input, NULL);
+	DirectInput8Create(m_hIns, DIRECTINPUT_HEADER_VERSION, IID_IDirectInput8, (VOID**)&m_input, nullptr);
 	if (m_input == nullptr)
 		return FALSE;
 
@@ -40,12 +40,12 @@ BOOL DInput::CreateDevice(INPUTDEVICE inputDevice, DWORD cooperaFlag)
 	case UnkownDevice:
 		break;
 	case MouseDevice:
-		hRes = m_input->CreateDevice(GUID_SysMouse, &m_mouseDevice, NULL);
+		hRes = m_input->CreateDevice(GUID_SysMouse, &m_mouseDevice, nullptr);
 		hRes = m_mouseDevice->SetDataFormat(&c_dfDIMouse);
 		hRes = m_mouseDevice->SetCooperativeLevel(m_hWnd, cooperaFlag);
 		break;
 	case KeyboardDevice:
-		hRes = m_input->CreateDevice(GUID_SysKeyboard, &m_keyboardDevice, NULL);
+		hRes = m_input->CreateDevice(GUID_SysKeyboard, &m_keyboardDevice, nullptr);
 		hRes = m_keyboardDevice->SetDataFormat(&c_dfDIKeyboard);
 		hRes = m_keyboardDevice->SetCooperativeLevel(m_hWnd, cooperaFlag);
 		break;

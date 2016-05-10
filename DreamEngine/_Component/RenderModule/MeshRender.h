@@ -40,15 +40,12 @@ public:
 	BOOL CreateMeshFromFileX(LPCWSTR pFileName, DWORD options);
 public:
 	VOID Run();
-	//DMateriaRender* GetMaterialRender() { return m_pMatRender; }
+	DMateriaRender* GetMaterialRender(DWORD matIndex = 0);
+	LPD3DXMESH GetMesh();
+	VOID SetMesh(LPD3DXMESH mess);
 private:
 	//DMateriaRender* m_pMatRender;
 	vector<DMateriaRender*> m_matRenders;
-
 	LPD3DXMESH m_pMess;
-	LPD3DXBUFFER m_ppAdjacency;
-	LPD3DXBUFFER m_ppMaterials;
-	LPD3DXBUFFER m_ppEffectInstances;
-	DWORD m_pNumMaterials;
 	//BOOL m_isDraw;
 };

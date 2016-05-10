@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
-DGameObject::DGameObject() 
-	:m_gameObjType(GAMEOBJTYPE::GameObj), m_parent(nullptr), m_isEnabled(TRUE)
+DGameObject::DGameObject(GAMEOBJTYPE goType)
+	:m_gameObjType(goType), m_parent(nullptr), m_isEnabled(TRUE)
 {
 	m_coms.push_back(new DTransform(this, m_coms.size()));
 }
