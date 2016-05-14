@@ -3,6 +3,13 @@
 #include "MaterialRender.h"
 #include <vector>
 
+
+typedef struct _RENDERSTATE
+{
+	D3DRENDERSTATETYPE rsRenderStateType;
+	DWORD rsValue;
+}RENDERSTATE, *PRENDERSTATE;
+
 enum MESHOPTION
 {
 	MeshOpt32Bit= D3DXMESH_32BIT ,
@@ -38,14 +45,21 @@ public:
 	BOOL CreateMeshSphere(FLOAT radius);
 	BOOL CreateMeshTeapot();
 	BOOL CreateMeshFromFileX(LPCWSTR pFileName, DWORD options);
+	DMaterialRender* CreateMaterial();
+	BOOL DestroyMaterial(DWORD matIndex);
+	VOID DestroyMaterialAll();
+
 public:
 	VOID Run();
-	DMateriaRender* GetMaterialRender(DWORD matIndex = 0);
+	DMaterialRender* GetMaterialRender(DWORD matIndex = 0);
 	LPD3DXMESH GetMesh();
 	VOID SetMesh(LPD3DXMESH mess);
+	VOID AddRenderState(RENDERSTATE & renderState);
 private:
-	//DMateriaRender* m_pMatRender;
-	vector<DMateriaRender*> m_matRenders;
+	//DMaterialRender* m_pMatRender;
+	vector<DMaterialRender*> m_matRenders;
 	LPD3DXMESH m_pMess;
+	vector<RENDERSTATE> m_renderStates;
 	//BOOL m_isDraw;
+
 };

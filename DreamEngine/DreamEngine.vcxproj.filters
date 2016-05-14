@@ -78,6 +78,9 @@
     <ClCompile Include="_Obj\RenderModule\Terrain.cpp">
       <Filter>源文件\Obj\RenderModule</Filter>
     </ClCompile>
+    <ClCompile Include="_Obj\RenderModule\Sky.cpp">
+      <Filter>源文件\Obj\RenderModule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_Component\RenderModule\MeshRender.h">
@@ -117,6 +120,9 @@
       <Filter>头文件\CommUtil</Filter>
     </ClInclude>
     <ClInclude Include="_Obj\RenderModule\Terrain.h">
+      <Filter>头文件\Obj\RenderModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_Obj\RenderModule\Sky.h">
       <Filter>头文件\Obj\RenderModule</Filter>
     </ClInclude>
   </ItemGroup>

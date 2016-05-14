@@ -1,25 +1,25 @@
 #include "GameObject.h"
 
 DGameObject::DGameObject(GAMEOBJTYPE goType)
-	:m_gameObjType(goType), m_parent(nullptr), m_isEnabled(TRUE)
 {
-	m_coms.push_back(new DTransform(this, m_coms.size()));
+	D3DXVECTOR3 vetZero(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vetOne(1.0f, 1.0f, 1.0f);
+	InitGameObject(vetZero, vetZero, vetOne, this, goType);
 }
 
 DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, GAMEOBJTYPE goType)
 {
-	DGameObject(pos, rotation, scale, nullptr, GAMEOBJTYPE::GameObj);
+	InitGameObject(pos, rotation, scale, nullptr, GAMEOBJTYPE::GameObj);
 }
 
 DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject * parent)
 {
-	DGameObject(pos, rotation, scale, parent, GAMEOBJTYPE::GameObj);
+	InitGameObject(pos, rotation, scale, parent, GAMEOBJTYPE::GameObj);
 }
 
 DGameObject::DGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject* parent, GAMEOBJTYPE goType)
-	:m_gameObjType(goType), m_parent(parent), m_isEnabled(TRUE)
 {
-	m_coms.push_back(new DTransform(pos, rotation, scale, this, m_coms.size()));
+	InitGameObject(pos, rotation, scale, parent, goType);
 }
 
 DGameObject::~DGameObject()
@@ -76,4 +76,12 @@ DBaseCom * DGameObject::GetComponent(COMTYPE comType)
 			return m_coms[comIndex];
 	}
 	return nullptr;
+}
+
+VOID DGameObject::InitGameObject(D3DXVECTOR3 & pos, D3DXVECTOR3 & rotation, D3DXVECTOR3 & scale, DGameObject * parent, GAMEOBJTYPE goType)
+{
+	m_gameObjType = goType;
+	m_parent = parent;
+	m_isEnabled = TRUE;
+	this->m_coms.push_back(new DTransform(pos, rotation, scale, this, m_coms.size()));
 }

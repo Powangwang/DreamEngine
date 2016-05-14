@@ -11,6 +11,7 @@ DBaseCom::~DBaseCom()
 {
 }
 
+
 COMTYPE DBaseCom::GetComponentType()
 {
 	return m_comType;

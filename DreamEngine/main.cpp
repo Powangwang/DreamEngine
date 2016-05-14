@@ -6,8 +6,8 @@
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
-#define WINDOW_WIDTH    512
-#define WINDOW_HEIGHT   384
+#define WINDOW_WIDTH    1024
+#define WINDOW_HEIGHT   768
 
 // Function Prototypes...
 bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen);
@@ -189,14 +189,16 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 10.0f, -15.0f), Space::World);
+	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
 
 	terrain = new DTerrain(64, 64, 10, 2);
+	//terrain->CreateBox();
 	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
 	meshRender->CreateMeshTeapot();
+	//meshRender->CreateBox();
 
 	
 	light = new DLight();
@@ -209,10 +211,11 @@ void RenderScene()
 {
 	camera->Run();
 	light->Run();
-	terrain->Run();
+
+
 	camera->BegineShowObject();
 	box->Run();
-
+	terrain->Run();
 	//MOUSESTATE mouseState;
 	//input->GetMouseState();
 	//char msgbuf[256];

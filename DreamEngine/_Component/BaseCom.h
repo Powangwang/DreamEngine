@@ -2,6 +2,7 @@
 #include<d3d9.h>
 #include<d3dx9.h>
 #include <string>
+#include <vector>
 //#include "CommRenderHead.h"
 //#include "../_Obj/GameObject.h"
 using namespace std;
@@ -14,6 +15,9 @@ enum  COMTYPE
 	DERenderMesh,
 	DERenderMaterial
 };
+
+
+
 class DBaseCom
 {
 public:

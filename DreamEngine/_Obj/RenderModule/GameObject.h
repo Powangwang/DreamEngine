@@ -34,6 +34,7 @@ public :
 	DBaseCom* GetComponent(COMTYPE comType);
 
 private:
+	VOID InitGameObject(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* parent, GAMEOBJTYPE goType);
 	virtual VOID Apply() {}
 
 protected:

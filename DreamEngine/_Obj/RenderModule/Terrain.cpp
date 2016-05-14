@@ -39,8 +39,9 @@ BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
 
 	DWORD numVertices = (m_cellsPerRow + 1) * (m_cellsPerCol + 1);
 	DWORD numTriangle = m_cellsPerRow * m_cellsPerCol * 2;
-	LPD3DXMESH terrainMesh = meshRender->GetMesh();
-	D3DXCreateMeshFVF(numTriangle, numVertices, 0, TERRAIN_FVF, DDEInitialize::gRootDevice, &terrainMesh);
+	LPD3DXMESH terrainMesh = nullptr;
+	if (FAILED(D3DXCreateMeshFVF(numTriangle, numVertices, 0, TERRAIN_FVF, DDEInitialize::gRootDevice, &terrainMesh)))
+		return FALSE;
 
 	if (!InitVertices(terrainMesh))
 		return FALSE;

@@ -79,7 +79,7 @@ BOOL DCamera::BegineShowObject()
 {
 	if (!m_isEnabled)
 		return FALSE;
-	DDEInitialize::gRootDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(100, 100, 100), 1.0f, 0);
+	DDEInitialize::gRootDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_XRGB(60, 150, 150), 1.0f, 0);
 	DDEInitialize::gRootDevice->BeginScene();
 	return TRUE;
 }
