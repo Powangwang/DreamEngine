@@ -48,9 +48,11 @@ BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
 
 	if (!InitIndices(terrainMesh))
 		return FALSE;
-	if (!InitTexture(&(meshRender->GetMaterialRender()->texture)))
+	if (!InitTexture(meshRender))
 		return FALSE;
 	meshRender->SetMesh(terrainMesh);
+
+	InitEffect(meshRender);	
 	return TRUE;
 }
 
@@ -134,25 +136,25 @@ BOOL DTerrain::InitIndices(LPD3DXMESH terrainMesh)
 	return TRUE;
 }
 
-BOOL DTerrain::InitTexture(LPDIRECT3DTEXTURE9* pTexture, WCHAR* textureFilePath)
+BOOL DTerrain::InitTexture(DMeshRender* terrainMesh, WCHAR* textureFilePath)
 {
 	HRESULT hr = 0;
 	FLOAT terrainScale = m_terrainInfo.thiHeightScale;
-
+	LPDIRECT3DTEXTURE9 pTexture = nullptr;
 	if (textureFilePath == nullptr)
 	{
 		hr = D3DXCreateTexture(DDEInitialize::gRootDevice, m_cellsPerRow, m_cellsPerCol, 0, 0, D3DFMT_X8R8G8B8,
-			D3DPOOL_MANAGED, pTexture);
+			D3DPOOL_MANAGED, &pTexture);
 		if (FAILED(hr))
 			return FALSE;
 
 		D3DSURFACE_DESC	texDesc;
-		(*pTexture)->GetLevelDesc(0, &texDesc);
+		pTexture->GetLevelDesc(0, &texDesc);
 		if (texDesc.Format != D3DFMT_X8R8G8B8)
 			return FALSE;
 
 		D3DLOCKED_RECT lockedRect;
-		(*pTexture)->LockRect(0, &lockedRect, 0, 0);
+		pTexture->LockRect(0, &lockedRect, 0, 0);
 		DWORD* pixData = (DWORD*)lockedRect.pBits;
 
 		for (DWORD i = 0; i < m_cellsPerCol; i++)
@@ -176,17 +178,26 @@ BOOL DTerrain::InitTexture(LPDIRECT3DTEXTURE9* pTexture, WCHAR* textureFilePath)
 				pixData[i * lockedRect.Pitch / 4 + j] = (D3DCOLOR)c;
 			}
 		}
-		(*pTexture)->UnlockRect(0);
-		hr = D3DXFilterTexture(*pTexture, 0, 0, D3DX_DEFAULT); // default filter
+		pTexture->UnlockRect(0);
+		hr = D3DXFilterTexture(pTexture, 0, 0, D3DX_DEFAULT); // default filter
 		if (FAILED(hr))
 			return FALSE;
 	}
 	else
 	{
-		hr = D3DXCreateTextureFromFile(DDEInitialize::gRootDevice, textureFilePath, pTexture);
+		hr = D3DXCreateTextureFromFile(DDEInitialize::gRootDevice, textureFilePath, &pTexture);
 		if (FAILED(hr))
 			return FALSE;
 	}
+	DMaterialRender* matRender = terrainMesh->CreateMaterial();
+	matRender->texture = pTexture;
+
+
+
+	//DGameObject::g_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	//DGameObject::g_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	//DGameObject::g_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
 
 	return TRUE;
 }
@@ -247,6 +258,38 @@ FLOAT DTerrain::GetTerrainVertHeight(DWORD rowVert, DWORD colVert)
 		return m_terrainInfo.pthiHeights[terrainIndex];
 	else
 		return -1;
+}
+
+VOID DTerrain::InitEffect(DMeshRender* meshRender)
+{
+	RENDERSTATE rstate;
+	rstate.rsRenderStateType = D3DRS_FILLMODE;
+	rstate.rsValue = D3DFILL_SOLID;
+	meshRender->AddRenderState(rstate);
+
+	rstate.rsRenderStateType = D3DRS_CULLMODE;
+	rstate.rsValue = D3DCULL_CCW;
+	meshRender->AddRenderState(rstate);
+
+	rstate.rsRenderStateType = D3DRS_LIGHTING;
+	rstate.rsValue = FALSE;
+	meshRender->AddRenderState(rstate);
+
+	SAMPLERSTATE sstate;
+	sstate.ssSampler = 0;
+	sstate.ssSamplerStateType = D3DSAMP_MAGFILTER;
+	sstate.ssValue = D3DTEXF_LINEAR;
+	meshRender->AddSamplerState(sstate);
+
+	sstate.ssSampler = 0;
+	sstate.ssSamplerStateType = D3DSAMP_MINFILTER;
+	sstate.ssValue = D3DTEXF_LINEAR;
+	meshRender->AddSamplerState(sstate);
+
+	sstate.ssSampler = 0;
+	sstate.ssSamplerStateType = D3DSAMP_MIPFILTER;
+	sstate.ssValue = D3DTEXF_LINEAR;
+	meshRender->AddSamplerState(sstate);
 }
 
 BOOL  DTerrain::ReadRawFile(WCHAR* terrainFilePath)

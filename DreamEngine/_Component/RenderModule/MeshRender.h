@@ -10,6 +10,20 @@ typedef struct _RENDERSTATE
 	DWORD rsValue;
 }RENDERSTATE, *PRENDERSTATE;
 
+typedef struct _TEXTURESTATE
+{
+	DWORD tsStage;
+	D3DTEXTURESTAGESTATETYPE tsTextureStateType;
+	DWORD tsValue;
+}TEXTURESTATE, *PTEXTURESTATE;
+
+typedef struct _SAMPLERSTATE
+{
+	DWORD ssSampler;
+	D3DSAMPLERSTATETYPE ssSamplerStateType;
+	DWORD ssValue;
+}SAMPLERSTATE, *PSAMPLERSTATE;
+
 enum MESHOPTION
 {
 	MeshOpt32Bit= D3DXMESH_32BIT ,
@@ -55,11 +69,26 @@ public:
 	LPD3DXMESH GetMesh();
 	VOID SetMesh(LPD3DXMESH mess);
 	VOID AddRenderState(RENDERSTATE & renderState);
+	VOID AddTextureSate(TEXTURESTATE & textureState);
+	VOID AddSamplerState(SAMPLERSTATE & samplerState);
+
+private:
+	VOID ApplyRenderState();
+	VOID ApplyOrignRenderState();
 private:
 	//DMaterialRender* m_pMatRender;
 	vector<DMaterialRender*> m_matRenders;
 	LPD3DXMESH m_pMess;
 	vector<RENDERSTATE> m_renderStates;
+	vector<RENDERSTATE> m_orignRenderStates;
+
+	vector<TEXTURESTATE> m_textureStates;
+	vector<SAMPLERSTATE>m_samplerStates;
+
+	vector<TEXTURESTATE> m_orignTextureStates;
+	vector<SAMPLERSTATE>m_orignSamplerStates;
 	//BOOL m_isDraw;
 
+public:
+	BOOL CreateBox();
 };

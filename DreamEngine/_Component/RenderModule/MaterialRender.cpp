@@ -28,14 +28,7 @@ VOID DMaterialRender::Run()
 {
 	if (m_isEnabled == FALSE)
 		return;
-	for each (TEXTURESTATE tstate in m_textureStates)
-	{
-		DDEInitialize::gRootDevice->SetTextureStageState(tstate.tsStage, tstate.tsTextureStateType, tstate.tsValue);
-	}
-	for each (SAMPLERSTATE sstate in m_samplerStates)
-	{
-		DDEInitialize::gRootDevice->SetSamplerState(sstate.ssSampler, sstate.ssSamplerStateType, sstate.ssValue);
-	}
+
 	DDEInitialize::gRootDevice->SetMaterial(&material);
 	if(texture != nullptr)
 		DDEInitialize::gRootDevice->SetTexture(0, texture);
@@ -48,16 +41,6 @@ BOOL DMaterialRender::LoadTexture(LPWSTR textureFile)
 	return TRUE;
 }
 
-
-VOID DMaterialRender::AddTextureSate(TEXTURESTATE & textureState)
-{
-	m_textureStates.push_back(textureState);
-}
-
-VOID DMaterialRender::AddSamplerState(SAMPLERSTATE & samplerState)
-{
-	m_samplerStates.push_back(samplerState);
-}
 
 //VOID DMaterialRender::SetMaterial(D3DMATERIAL9& mat)
 //{

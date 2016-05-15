@@ -13,8 +13,9 @@ private:
 	BOOL ReadRawFile(WCHAR* terrainFilePath);
 	BOOL InitVertices(LPD3DXMESH terrainMesh);
 	BOOL InitIndices(LPD3DXMESH terrainMesh);
-	BOOL InitTexture(LPDIRECT3DTEXTURE9* texture, WCHAR* textureFilePath = nullptr);
+	BOOL InitTexture(DMeshRender* terrainMesh, WCHAR* textureFilePath = nullptr);
 	FLOAT GetTerrainVertHeight(DWORD rowVert, DWORD colVert);
+	VOID InitEffect(DMeshRender* meshRender);
 private:
 	struct TERRAINHEIGHTINFO
 	{

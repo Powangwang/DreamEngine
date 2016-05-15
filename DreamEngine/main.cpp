@@ -16,6 +16,7 @@ void RenderScene();
 void Shutdown();
 
 //Teapot tp;
+DSky* skybox;
 DTerrain* terrain;
 DCamera* camera;
 DLight* light;
@@ -189,16 +190,22 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
+	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
+	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -5.0f), Space::World);
 
 	terrain = new DTerrain(64, 64, 10, 2);
 	//terrain->CreateBox();
 	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
+	skybox = new DSky(2000.0f);
+	skybox->CreateSkybox(L"..\\Resource\\skybox\\frontsnow1.jpg", L"..\\Resource\\skybox\\backsnow1.jpg",
+		L"..\\Resource\\skybox\\leftsnow1.jpg", L"..\\Resource\\skybox\\rightsnow1.jpg", L"..\\Resource\\skybox\\topsnow1.jpg");
+
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	meshRender->CreateMeshTeapot();
-	//meshRender->CreateBox();
+	//meshRender->CreateMeshTeapot();
+	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
+	meshRender->CreateBox();
 
 	
 	light = new DLight();
@@ -214,8 +221,10 @@ void RenderScene()
 
 
 	camera->BegineShowObject();
-	box->Run();
-	terrain->Run();
+	skybox->Run();
+	//box->Run();
+	//terrain->Run();
+
 	//MOUSESTATE mouseState;
 	//input->GetMouseState();
 	//char msgbuf[256];
@@ -227,7 +236,7 @@ void RenderScene()
 	//OutputDebugStringA(msgbuf;)
 
 	KEYBOARDINFO keyInfo;
-	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPress;
+	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPressing;
 	if(input->GetKeyboardState())
 	{
 		float angle = -0.1f;
@@ -241,10 +250,16 @@ void RenderScene()
 		{
 			camera->GetTransform()->Rotate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::Local);
 		}
+
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_W;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			box->GetTransform()->Rotate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::Local);
+		}
 	}
 
 
-	//Sleep(100);
+	Sleep(100);
 
 
 	//terrain->ShowTerrain(TRUE);
