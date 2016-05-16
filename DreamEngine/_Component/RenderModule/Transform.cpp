@@ -35,20 +35,23 @@ VOID DTransform::Translate(D3DXVECTOR3 & translation, Space space)
 {
 	D3DXMATRIX rMatrix;
 	D3DXMATRIX posMatrix;
-	D3DXMatrixIdentity(&posMatrix);
 	//D3DXMatrixTranslation(&matrix, translation.x, translation.y, translation.z);
 	//m_psMatrix *= matrix;
-	m_position += translation;
-	if (space == Local)
+	if (space == World)
 	{
-		posMatrix._41 = m_position.x;
-		posMatrix._42 = m_position.y;
-		posMatrix._43 = m_position.z;
+		m_position += translation;
+	}
+	else
+	{
+		D3DXMatrixIdentity(&posMatrix);
+		posMatrix._41 = translation.x;
+		posMatrix._42 = translation.y;
+		posMatrix._43 = translation.z;
 		D3DXMatrixRotationQuaternion(&rMatrix, &m_rQuat);
 		posMatrix *= rMatrix;
-		m_position.x = posMatrix._41;
-		m_position.y = posMatrix._42;
-		m_position.z = posMatrix._43;
+		m_position.x += posMatrix._41;
+		m_position.y += posMatrix._42;
+		m_position.z += posMatrix._43;
 	}
 
 	SetOtherOption();
@@ -197,17 +200,17 @@ VOID DTransform::RotationEulerToQuaternion(D3DXQUATERNION * qOut, D3DXVECTOR3 & 
 	if (qOut == nullptr)
 		return;
 
-	D3DXVECTOR3 vX(1, 0, 0);
-	D3DXVECTOR3 vY(0, 1, 0);
-	D3DXVECTOR3 vZ(0, 0, 1);
+	//D3DXVECTOR3 vX(1, 0, 0);
+	//D3DXVECTOR3 vY(0, 1, 0);
+	//D3DXVECTOR3 vZ(0, 0, 1);
 
-	D3DXQUATERNION quatX(vX.x, vX.y, vX.z, rotation.x * D3DX_PI / 180.0f);
-	D3DXQUATERNION quatY(vY.x, vY.y, vY.z, rotation.y * D3DX_PI / 180.0f);
-	D3DXQUATERNION quatZ(vZ.x, vZ.y, vZ.z, rotation.z * D3DX_PI / 180.0f);
+	//D3DXQUATERNION quatX(vX.x, vX.y, vX.z, rotation.x * D3DX_PI / 180.0f);
+	//D3DXQUATERNION quatY(vY.x, vY.y, vY.z, rotation.y * D3DX_PI / 180.0f);
+	//D3DXQUATERNION quatZ(vZ.x, vZ.y, vZ.z, rotation.z * D3DX_PI / 180.0f);
 
-	*qOut = quatX * quatY * quatZ;
+	//*qOut = quatX * quatY * quatZ;
 	
-	D3DXQuaternionRotationYawPitchRoll(qOut, rotation.y, rotation.x, rotation.z);
+	D3DXQuaternionRotationYawPitchRoll(qOut, rotation.y * D3DX_PI / 180.0f, rotation.x * D3DX_PI / 180.0f, rotation.z * D3DX_PI / 180.0f);
 	D3DXQuaternionNormalize(qOut, qOut);
 }
 

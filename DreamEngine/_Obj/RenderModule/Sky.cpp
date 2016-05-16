@@ -28,16 +28,16 @@ BOOL DSky::CreateSkybox(LPWSTR frontTextureFile, LPWSTR backTextureFile, LPWSTR 
 	if (meshRender == nullptr)
 		return FALSE;
 	LPD3DXMESH skyMesh = nullptr;
-	if (FAILED(D3DXCreateMeshFVF(2, 4, D3DXMESH_MANAGED, SKYBOX_FVF, DDEInitialize::gRootDevice, &skyMesh)))
+	if (FAILED(D3DXCreateMeshFVF(10, 20, D3DXMESH_MANAGED, SKYBOX_FVF, DDEInitialize::gRootDevice, &skyMesh)))
 		return FALSE;
 
 	if (!InitVertices(skyMesh))
 		return FALSE;
-	if (!InitIndices(skyMesh))
+	if (!InitIndices(skyMesh, 5))
 		return FALSE;
 
 	LPWSTR texFiles[5] = { frontTextureFile, backTextureFile, leftTextureFile, rightTextureFile, topTextureFile };
-	if (!InitTexture(meshRender, texFiles, 1))
+	if (!InitTexture(meshRender, texFiles, 5))
 		return FALSE;
 
 	//meshRender->CreateMaterial();
@@ -57,11 +57,6 @@ BOOL DSky::InitVertices(LPD3DXMESH skyboxMesh)
 	skyboxMesh->LockVertexBuffer(0, (LPVOID*)&v);
 	if (v == nullptr)
 		return FALSE;
-
-	//v[0] = SkyboxVertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f);
-	//v[1] = SkyboxVertex(1.0f, 1.0f, -1.0f, 1.0f, 1.0f);
-	//v[2] = SkyboxVertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f);
-	//v[3] = SkyboxVertex(1.0f, -1.0f, -1.0f, 1.0f, 0.0f);
 	//Ç°Ãæ
 	v[0] = SkyboxVertex(-vetPos, vetPos * 2, vetPos, 0.0f, 0.0f);
 	v[1] = SkyboxVertex(vetPos, vetPos * 2, vetPos, 1.0f, 0.0f);
@@ -90,7 +85,7 @@ BOOL DSky::InitVertices(LPD3DXMESH skyboxMesh)
 	skyboxMesh->UnlockIndexBuffer();
 	return TRUE;
 }
-BOOL DSky::InitIndices(LPD3DXMESH skyboxMesh)
+BOOL DSky::InitIndices(LPD3DXMESH skyboxMesh, DWORD faceCount)
 {
 	if (skyboxMesh == nullptr)
 		return FALSE;
@@ -99,28 +94,26 @@ BOOL DSky::InitIndices(LPD3DXMESH skyboxMesh)
 	skyboxMesh->LockIndexBuffer(0, (LPVOID*)&i);
 	if (i == nullptr)
 		return FALSE;
-	for (int faceCount = 0; faceCount < 1; faceCount++)
+	for (DWORD faceIndex = 0; faceIndex < faceCount; faceIndex++)
 	{
-		i[0 + faceCount * 6] = (WORD)(0 + faceCount * 4); 
-		i[1 + faceCount * 6] = (WORD)(1 + faceCount * 4);
-		i[2 + faceCount * 6] = (WORD)(2 + faceCount * 4);
+		i[0 + faceIndex * 6] = (WORD)(0 + faceIndex * 4); 
+		i[1 + faceIndex * 6] = (WORD)(1 + faceIndex * 4);
+		i[2 + faceIndex * 6] = (WORD)(2 + faceIndex * 4);
 
-		i[3 + faceCount * 6] = (WORD)(2 + faceCount * 4);
-		i[4 + faceCount * 6] = (WORD)(1 + faceCount * 4);
-		i[5 + faceCount * 6] = (WORD)(3 + faceCount * 4);
+		i[3 + faceIndex * 6] = (WORD)(2 + faceIndex * 4);
+		i[4 + faceIndex * 6] = (WORD)(1 + faceIndex * 4);
+		i[5 + faceIndex * 6] = (WORD)(3 + faceIndex * 4);
 	}
-	//i[0] = 0; i[1] = 1; i[2] = 2;
-	//i[3] = 1; i[4] = 2; i[5] = 3;
 	skyboxMesh->UnlockIndexBuffer();
 
 	DWORD* attributeBuffer = nullptr;
 	skyboxMesh->LockAttributeBuffer(0, &attributeBuffer);
 	if (attributeBuffer == nullptr)
 		return FALSE;
-	for (int faceCount = 0; faceCount < 1; faceCount++)
+	for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
 	{
-		attributeBuffer[0 + faceCount * 2] = faceCount;
-		attributeBuffer[1 + faceCount * 2] = faceCount;
+		attributeBuffer[0 + faceIndex * 2] = faceIndex;
+		attributeBuffer[1 + faceIndex * 2] = faceIndex;
 	}
 	//attributeBuffer[0] = 0;
 	//attributeBuffer[1] = 0;
@@ -154,7 +147,7 @@ VOID DSky::InitEffect(DMeshRender * meshRender)
 	meshRender->AddRenderState(rstate);
 
 	rstate.rsRenderStateType = D3DRS_CULLMODE;
-	rstate.rsValue = D3DCULL_NONE;
+	rstate.rsValue = D3DCULL_CCW;
 	meshRender->AddRenderState(rstate);
 
 	rstate.rsRenderStateType = D3DRS_LIGHTING;

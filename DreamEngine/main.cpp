@@ -197,15 +197,16 @@ bool InitializeObjects()
 	//terrain->CreateBox();
 	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
-	skybox = new DSky(2000.0f);
+	skybox = new DSky(20000.0f);
 	skybox->CreateSkybox(L"..\\Resource\\skybox\\frontsnow1.jpg", L"..\\Resource\\skybox\\backsnow1.jpg",
 		L"..\\Resource\\skybox\\leftsnow1.jpg", L"..\\Resource\\skybox\\rightsnow1.jpg", L"..\\Resource\\skybox\\topsnow1.jpg");
+	skybox->GetTransform()->Translate(D3DXVECTOR3(0.0f, -5000.0f, 0.0f), Space::World);
 
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	//meshRender->CreateMeshTeapot();
+	meshRender->CreateMeshTeapot();
 	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
-	meshRender->CreateBox();
+	//meshRender->CreateBox();
 
 	
 	light = new DLight();
@@ -239,7 +240,7 @@ void RenderScene()
 	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPressing;
 	if(input->GetKeyboardState())
 	{
-		float angle = -0.1f;
+		float angle = -5.0f;
 		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_A;
 		if (input->MatchKeyboardState(keyInfo))
 		{
