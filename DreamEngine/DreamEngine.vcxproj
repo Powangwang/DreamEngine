@@ -155,12 +155,13 @@
     <ClCompile Include="_Component\RenderModule\MaterialRender.cpp" />
     <ClCompile Include="_Component\RenderModule\MeshRender.cpp" />
     <ClCompile Include="_Component\RenderModule\Transform.cpp" />
+    <ClCompile Include="_Obj\GameObject.cpp" />
     <ClCompile Include="_Obj\Input.cpp" />
     <ClCompile Include="_Obj\RenderModule\Camera.cpp" />
-    <ClCompile Include="_Obj\RenderModule\GameObject.cpp" />
     <ClCompile Include="_Obj\RenderModule\Light.cpp" />
     <ClCompile Include="_Obj\RenderModule\Sky.cpp" />
     <ClCompile Include="_Obj\RenderModule\Terrain.cpp" />
+    <ClCompile Include="_Obj\UIModule\Font.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_CommUtil\DEInitialize.h" />
@@ -171,12 +172,13 @@
     <ClInclude Include="_Component\RenderModule\MeshRender.h" />
     <ClInclude Include="_Component\RenderModule\Transform.h" />
     <ClInclude Include="_Obj\CommObj.h" />
+    <ClInclude Include="_Obj\GameObject.h" />
     <ClInclude Include="_Obj\Input.h" />
     <ClInclude Include="_Obj\RenderModule\Camera.h" />
     <ClInclude Include="_Obj\RenderModule\Sky.h" />
     <ClInclude Include="_Obj\RenderModule\Terrain.h" />
-    <ClInclude Include="_Obj\RenderModule\GameObject.h" />
     <ClInclude Include="_Obj\RenderModule\Light.h" />
+    <ClInclude Include="_Obj\UIModule\Font.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="named_protocol.txt" />

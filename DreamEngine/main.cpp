@@ -22,6 +22,8 @@ DCamera* camera;
 DLight* light;
 DGameObject* box;
 DInput* input;
+DFont * font;
+
 WCHAR buff[1024] = { 0 };
 //ID3DXMesh* Objects[4] = { 0, 0, 0, 0 };
 //D3DXMATRIX  Worlds[4];
@@ -145,44 +147,7 @@ bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen)
 	input = new DInput(hInst, hWnd);
 	input->CreateDevice(INPUTDEVICE::MouseDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::NonExclusive);
 	input->CreateDevice(INPUTDEVICE::KeyboardDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::Exclusive);
-	//D3DXVECTOR3 pos;
-	//pos.x = 1.11;
-	//pos.y = 2.22;
-	//pos.z = 3.33;
-	//D3DXVECTOR3 rotation;
-	//rotation.x = D3DX_PI/2;
-	//rotation.y = D3DX_PI / 4;
-	//rotation.z = D3DX_PI / 3;
-	//D3DXVECTOR3 scale;
-	//scale.x = 1.11;
-	//scale.y = 2.22;
-	//scale.z = 3.33;
 
-	//D3DXMATRIX matrix;
-	//D3DXMATRIX m_transMatrix;
-	//D3DXMatrixIdentity(&m_transMatrix);
-	////D3DXMatrixTranslation(&matrix, pos.x, pos.y, pos.y);
-	////m_transMatrix *= matrix;
-
-	//D3DXMatrixRotationX(&matrix, rotation.x);
-	//m_transMatrix *= matrix;
-	//D3DXMatrixRotationY(&matrix, rotation.y);
-	//m_transMatrix *= matrix;
-	//D3DXMatrixRotationZ(&matrix, rotation.z);
-	//m_transMatrix *= matrix;
-
-	//D3DXMatrixScaling(&matrix, scale.x, scale.y, scale.z);
-	//m_transMatrix *= matrix;
-
-	//D3DXMATRIX mat1;
-	//D3DXMatrixIdentity(&mat1);
-
-	//D3DXMATRIX mat;
-	//D3DXMatrixIdentity(&mat);
-	//mat._11 = 5;
-	//mat._22 = 2;
-	//mat._33 = 4;
-	//mat = mat1 -mat;
 	return true;
 }
 
@@ -194,7 +159,6 @@ bool InitializeObjects()
 	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -5.0f), Space::World);
 
 	terrain = new DTerrain(64, 64, 10, 2);
-	//terrain->CreateBox();
 	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
 	skybox = new DSky(20000.0f);
@@ -210,19 +174,24 @@ bool InitializeObjects()
 
 	
 	light = new DLight();
-	
+
+	font = new DFont();
+	font->SetText(L"hello world", D3DXCOLOR(255, 0, 0, 255));
+	font->GetTransform()->Translate(D3DXVECTOR3(10.0f, 5.0f, 0), Space::World);
 	return true;
 }
 
 
 void RenderScene()
 {
+
 	camera->Run();
 	light->Run();
 
 
 	camera->BegineShowObject();
 	skybox->Run();
+	font->Run();
 	//box->Run();
 	//terrain->Run();
 
@@ -283,3 +252,5 @@ void Shutdown()
 
 	DDEInitialize::EndInitD3D();
 }
+
+

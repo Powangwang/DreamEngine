@@ -1,5 +1,5 @@
 #pragma once
-//#include "../../_Component\RenderModule/CommRenderHead.h"
+
 #include "GameObject.h"
 
 #define VIEW_ANGLE (0.5f)
