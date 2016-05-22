@@ -31,9 +31,9 @@ DTerrain::~DTerrain()
 }
 
 //地形读取比较耗时，后期采用异步读取方式
-BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
+BOOL DTerrain::CreateTerrain(WCHAR* terrainRawPath, WCHAR* terrainTexturePath)
 {
-	if (!ReadRawFile(terrainFilePath))
+	if (!ReadRawFile(terrainRawPath))
 		return FALSE;
 	DMeshRender* meshRender = (DMeshRender*)AddComponent(COMTYPE::DERenderMesh);
 	if (meshRender == nullptr)
@@ -56,7 +56,7 @@ BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
 
 	if (!InitIndices(terrainMesh))
 		return FALSE;
-	if (!InitTexture(meshRender))
+	if (!InitTexture(meshRender, terrainTexturePath))
 		return FALSE;
 	meshRender->SetMesh(terrainMesh);
 

@@ -6,6 +6,8 @@
 #define VIEW_WIDTH 640
 #define VIEW_HEIGHT 480
 
+
+class DRay;
 enum DISPLAYTYPE
 {
 	NoneType,
@@ -22,15 +24,17 @@ public:
 	~DCamera();
 	BOOL BegineShowObject();
 	BOOL EndShowObject();
-	BOOL SetViewPort(const D3DVIEWPORT9* pViewPort);
+	DRay* ViewportPointToRay(D3DXVECTOR2 position);
+	BOOL ScreenPointToWorldPos(D3DXVECTOR2 position, D3DXVECTOR3 * pWorldPosOut);
 
 public:
 	virtual VOID Run();
 
 public:
-	//VOID SetPostion(D3DXVECTOR3 & pos);
-	//VOID SetRotation(D3DXVECTOR3 & rot);
-	//VOID Translate
+	BOOL SetViewPort(const D3DVIEWPORT9* pViewport);
+	BOOL GetViewPort(D3DVIEWPORT9* pViewportOut);
+	BOOL GetProjectMatrix(D3DXMATRIX* pProjMatrixOut);
+	BOOL GetViewMatrix(D3DXMATRIX* pViewMatrixOut);
 
 	VOID SetProjectAngle(float angle);
 	VOID SetProjectWidth(float width);
@@ -49,7 +53,6 @@ public:
 private:
 	BOOL SetCameraProjection();
 	BOOL SetCameraView();
-	VOID GetViewMatrix(D3DXMATRIX* viewMatrix);
 	virtual VOID Apply();
 
 

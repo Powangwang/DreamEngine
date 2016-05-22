@@ -13,10 +13,11 @@ public:
 	DTransform(DGameObject* gameObj, DWORD indexInParent);
 	DTransform(D3DXVECTOR3& pos, D3DXVECTOR3& rotation, D3DXVECTOR3& scale, DGameObject* gameObj, DWORD indexInParent, wstring comName = L"");
 	~DTransform();
-
-public:
+	VOID Run();
 	VOID Translate(D3DXVECTOR3 & translation, Space space);
 	VOID Rotate(D3DXVECTOR3 & eulerAngles, Space space);
+
+public:
 	VOID SetPosition(D3DXVECTOR3& pos);
 	VOID SetRotation(D3DXVECTOR3 & eulerAngles);
 	VOID SetScale(D3DXVECTOR3 & scale);
@@ -26,7 +27,8 @@ public:
 	VOID GetSelfRight(D3DXVECTOR3* vOut);
 	VOID GetPosition(D3DXVECTOR3* pOut, Space space);
 	VOID GetScale(D3DXVECTOR3 * sOut);
-	VOID Run();
+
+	VOID GetTransformMatrix(D3DXMATRIX* pTransfromMatrix);
 
 	VOID QuaternionToEuler(D3DXVECTOR3* vOut, D3DXQUATERNION* q);
 

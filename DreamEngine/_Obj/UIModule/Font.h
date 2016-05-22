@@ -6,7 +6,7 @@ class DFont : public DGameObject
 public:
 	DFont();
 	~DFont();
-	VOID SetText(WCHAR* textBuff, D3DXCOLOR textColor);
+	VOID SetText(WCHAR* textBuff, D3DXCOLOR textColor = D3DXCOLOR(0, 0, 0, 255));
 	VOID Run();
 private:
 	BOOL InitDxFont(INT Height, UINT Width, UINT Weight, UINT MipLevels,

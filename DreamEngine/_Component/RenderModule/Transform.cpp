@@ -176,10 +176,11 @@ VOID DTransform::GetScale(D3DXVECTOR3 * sOut)
 
 }
 
-VOID DTransform::Run()
+VOID DTransform::GetTransformMatrix(D3DXMATRIX * pTransfromMatrix)
 {
-	if (DDEInitialize::gRootDevice == nullptr)
+	if (DDEInitialize::gRootDevice == nullptr || pTransfromMatrix == nullptr)
 		return;
+
 	D3DXMATRIX tMatrix;
 	D3DXMATRIX rMatrix;
 	D3DXMatrixRotationQuaternion(&rMatrix, &m_rQuat);
@@ -192,6 +193,16 @@ VOID DTransform::Run()
 	tMatrix._42 = m_position.y;
 	tMatrix._43 = m_position.z;
 	tMatrix = rMatrix * tMatrix;
+	*pTransfromMatrix = tMatrix;
+}
+
+VOID DTransform::Run()
+{
+	if (m_isEnabled == FALSE)
+		return;
+
+	D3DXMATRIX tMatrix;
+	GetTransformMatrix(&tMatrix);
 	DDEInitialize::gRootDevice->SetTransform(D3DTS_WORLD, &tMatrix);
 }
 

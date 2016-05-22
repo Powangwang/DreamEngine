@@ -1,5 +1,6 @@
 #include"Camera.h"
-//#include "../_CommAction/DEInitialize.h"
+#include "UtilModule/Ray.h"
+
 DCamera::DCamera() : DGameObject(GAMEOBJTYPE::GameObjCamera),
 	m_viewAngle(VIEW_ANGLE),
 	m_viewWidth(VIEW_WIDTH), m_viewHeight(VIEW_HEIGHT),
@@ -61,19 +62,19 @@ BOOL DCamera::SetCameraView()
 	return TRUE;
 }
 
-VOID DCamera::GetViewMatrix(D3DXMATRIX* viewMatrix)
-{
-	if (viewMatrix == nullptr)
-		return;
-	DTransform* transform = (DTransform*)GetComponent(COMTYPE::DERenderTransform);
-	if (transform == nullptr)
-		return ;
+//VOID DCamera::GetViewMatrix(D3DXMATRIX* viewMatrix)
+//{
+//	if (viewMatrix == nullptr)
+//		return;
+//	DTransform* transform = (DTransform*)GetComponent(COMTYPE::DERenderTransform);
+//	if (transform == nullptr)
+//		return ;
 
 	//D3DXMATRIX rMatrix;
 	//D3DXQUATERNION rQuat;
 	//D3DXQuaternionInverse(&rQuat, &transform->m_rQuat);
 	//D3DXMatrixRotationQuaternion(&rMatrix, &rQuat);
-}
+//}
 
 BOOL DCamera::BegineShowObject()
 {
@@ -92,10 +93,94 @@ BOOL DCamera::EndShowObject()
 	return TRUE;
 }
 
-BOOL DCamera::SetViewPort(const D3DVIEWPORT9* pViewPort)
+BOOL DCamera::SetViewPort(const D3DVIEWPORT9* pViewport)
 {
-	DDEInitialize::gRootDevice->SetViewport(pViewPort);
+	HRESULT hr = -1;
+	hr = DDEInitialize::gRootDevice->SetViewport(pViewport);
+	return SUCCEEDED(hr);
+}
+
+BOOL DCamera::GetViewPort(D3DVIEWPORT9 * pViewportOut)
+{
+	if (pViewportOut == nullptr)
+		return FALSE;
+
+	HRESULT hr = -1;
+	hr = DDEInitialize::gRootDevice->GetViewport(pViewportOut);
+
+	return SUCCEEDED(hr);
+}
+
+BOOL DCamera::GetProjectMatrix(D3DXMATRIX* pProjMatrixOut)
+{
+	HRESULT hr = -1;
+	if (pProjMatrixOut == nullptr)
+		return FALSE;
+
+	//hr = DDEInitialize::gRootDevice->GetTransform(D3DTS_PROJECTION, pProjMatrixOut);
+
+	//D3DXMATRIX proj;
+	ZeroMemory(pProjMatrixOut, sizeof(D3DXMATRIX));
+
+	float fov = D3DX_PI * m_viewAngle;
+	float aspect = m_viewWidth / m_viewHeight;
+	pProjMatrixOut->_11 = 1 / (tan(fov * 0.5f) *aspect);
+	pProjMatrixOut->_22 = 1 / tan(fov * 0.5f);
+	pProjMatrixOut->_33 = m_zf / (m_zf - m_zn);
+	pProjMatrixOut->_34 = 1.0f;
+	pProjMatrixOut->_43 = (m_zn * m_zf) / (m_zn - m_zf);
+
 	return TRUE;
+}
+
+BOOL DCamera::GetViewMatrix(D3DXMATRIX * pViewMatrixOut)
+{
+	if (pViewMatrixOut == nullptr)
+		return FALSE;
+
+	HRESULT hr = -1;
+	hr = DDEInitialize::gRootDevice->GetTransform(D3DTS_VIEW, pViewMatrixOut);
+	return SUCCEEDED(hr);
+}
+
+DRay * DCamera::ViewportPointToRay(D3DXVECTOR2 position)
+{
+	D3DVIEWPORT9 viewport;
+	if (GetViewPort(&viewport) == FALSE)
+		return nullptr;
+	D3DXMATRIX projMatrix;
+	if (GetProjectMatrix(&projMatrix) == FALSE)
+		return nullptr;
+
+	D3DXMATRIX viewMatrix;
+	if (GetViewMatrix(&viewMatrix) == FALSE)
+		return nullptr;
+	D3DXMatrixInverse(&viewMatrix, 0, &viewMatrix);
+
+	FLOAT px = 2.0f * (position.x - viewport.X) / viewport.Width - 1.0f;
+	FLOAT py = -2.0f * (position.y - viewport.Y) / viewport.Height + 1.0f;
+	px /= projMatrix(0, 0);
+	py /= projMatrix(1, 1);
+
+	DRay * cameraToRay = new DRay();
+	D3DXVECTOR3 rayPos;
+	cameraToRay->GetRayPosition(&rayPos);
+	D3DXVECTOR3 rayVector;
+	rayVector.x = px;
+	rayVector.y = py;
+	rayVector.z = 1.0f;
+
+	D3DXVec3TransformCoord(&rayPos, &rayPos, &viewMatrix);
+	D3DXVec3TransformNormal(&rayVector, &rayVector, &viewMatrix);
+	D3DXVec3Normalize(&rayVector, &rayVector);
+	cameraToRay->SetRayPosition(rayPos);
+	cameraToRay->SetRayVector(rayVector);
+	return cameraToRay;
+}
+
+BOOL DCamera::ScreenPointToWorldPos(D3DXVECTOR2 position, D3DXVECTOR3 * pWorldPosOut)
+{
+	return 0;
 }
 
 VOID DCamera::Apply()

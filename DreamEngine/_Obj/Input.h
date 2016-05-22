@@ -217,6 +217,9 @@ public:
 	BOOL GetKeyboardState();
 	BOOL MatchKeyboardState(KEYBOARDINFO keyboardInfo);
 
+public:
+	VOID GetMousePos(D3DXVECTOR3 * pMousePosOut);
+
 private:
 	BOOL GetDeviceState(INPUTDEVICE queryDevice);
 private:
@@ -229,10 +232,11 @@ private:
 	DIMOUSESTATE m_diMouseState;
 	CHAR m_keyStateBuffer[256];
 
-	D3DXVECTOR3 m_mousePos;
 	MOUSESTATE m_prevMouseState;
 	KEYBOARDINFO m_prevKbState[KBPUSHCOUNT];
 
 	BOOL m_isMouseAction;
 	BOOL m_isKeyboardAction;
+
+	D3DXVECTOR3 m_mousePos;
 };

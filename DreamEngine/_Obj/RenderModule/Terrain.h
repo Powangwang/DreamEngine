@@ -6,7 +6,7 @@ class DTerrain : public DGameObject
 public:
 	DTerrain(INT rows, INT cols, INT cellSpacing, FLOAT terrainHeightScale);
 	~DTerrain();
-	BOOL CreateTerrain(WCHAR* terrainFilePath);
+	BOOL CreateTerrain(WCHAR* terrainRawPath, WCHAR* terrainTexturePath = nullptr);
 	FLOAT GetTerrainHeight(FLOAT zPix, FLOAT xPix);
 
 private:

@@ -61,6 +61,9 @@
     <Filter Include="源文件\CommUtil\FrameModule">
       <UniqueIdentifier>{f400d305-1303-4329-ab8a-21cdb35c5827}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Component\PhysicsModule">
+      <UniqueIdentifier>{9c50feb5-a7cc-4057-8204-a18fd7372a39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="_CommUtil\FrameModule\DEInitialize.cpp">
       <Filter>源文件\CommUtil\FrameModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_CommUtil\UtilModule\Ray.cpp">
+      <Filter>源文件\CommUtil\UtilModule</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="_CommUtil\FrameModule\DEInitialize.h">
       <Filter>头文件\CommUtil\FrameModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_CommUtil\UtilModule\Ray.h">
+      <Filter>头文件\CommUtil\UtilModule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

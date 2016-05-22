@@ -79,12 +79,11 @@ private:
 	//DMaterialRender* m_pMatRender;
 	vector<DMaterialRender*> m_matRenders;
 	LPD3DXMESH m_pMess;
+
 	vector<RENDERSTATE> m_renderStates;
 	vector<RENDERSTATE> m_orignRenderStates;
-
 	vector<TEXTURESTATE> m_textureStates;
 	vector<SAMPLERSTATE>m_samplerStates;
-
 	vector<TEXTURESTATE> m_orignTextureStates;
 	vector<SAMPLERSTATE>m_orignSamplerStates;
 	//BOOL m_isDraw;

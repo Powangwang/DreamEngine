@@ -253,6 +253,21 @@ BOOL DInput::MatchKeyboardState(KEYBOARDINFO keyboardInfo)
 	return isMatch;
 }
 
+VOID DInput::GetMousePos(D3DXVECTOR3 * pMousePosOut)
+{
+	if (pMousePosOut == nullptr)
+		return;
+	POINT mousePos;
+	::GetCursorPos(&mousePos);
+	::ScreenToClient(m_hWnd, &mousePos);
+	//pMousePosOut->x = m_diMouseState.lX;
+	//pMousePosOut->y = m_diMouseState.lY;
+	//pMousePosOut->z = m_diMouseState.lZ;	
+	pMousePosOut->x = mousePos.x;
+	pMousePosOut->y = mousePos.y;
+	pMousePosOut->z = 0;
+}
+
 BOOL DInput::GetDeviceState(INPUTDEVICE queryDevice)
 {
 	HRESULT hr = -1;

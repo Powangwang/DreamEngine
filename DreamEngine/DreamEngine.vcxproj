@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="_CommUtil\FrameModule\DEInitialize.cpp" />
+    <ClCompile Include="_CommUtil\UtilModule\Ray.cpp" />
     <ClCompile Include="_CommUtil\UtilModule\String.cpp" />
     <ClCompile Include="_Component\BaseCom.cpp" />
     <ClCompile Include="_Component\RenderModule\MaterialRender.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="DEngine.h" />
     <ClInclude Include="_CommUtil\CommUtil.h" />
     <ClInclude Include="_CommUtil\FrameModule\DEInitialize.h" />
+    <ClInclude Include="_CommUtil\UtilModule\Ray.h" />
     <ClInclude Include="_CommUtil\UtilModule\String.h" />
     <ClInclude Include="_Component\BaseCom.h" />
     <ClInclude Include="_Component\CommComponent.h" />

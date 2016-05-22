@@ -20,6 +20,7 @@ DGameObject* box;
 DInput* input;
 DFont * font;
 
+DRay * ray;
 WCHAR buff[1024] = { 0 };
 //ID3DXMesh* Objects[4] = { 0, 0, 0, 0 };
 //D3DXMATRIX  Worlds[4];
@@ -151,8 +152,8 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
-	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -5.0f), Space::World);
+	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
+	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -600.0f), Space::World);
 
 	terrain = new DTerrain(256, 256, 10, 2);
 	terrain->CreateTerrain(L"..\\Resource\\coastMountainEx.raw");	
@@ -165,8 +166,9 @@ bool InitializeObjects()
 	skybox->GetTransform()->Translate(D3DXVECTOR3(0.0f, -5000.0f, 0.0f), Space::World);
 
 	box = new DGameObject();
+	box->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -590.0f), Space::World);
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	//meshRender->CreateMeshTeapot();
+	meshRender->CreateMeshTeapot();
 	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
 	//meshRender->CreateBox();
 
@@ -188,15 +190,39 @@ void RenderScene()
 	camera->Run();
 	light->Run();
 
-
 	camera->BegineShowObject();
 	skybox->Run();
 	font->Run();
-	//box->Run();
+	box->Run();
 	terrain->Run();
 
-	//MOUSESTATE mouseState;
-	//input->GetMouseState();
+	if (input->GetMouseState())
+	{
+		MOUSESTATE mouseState;
+		mouseState = MOUSESTATE::Move;
+
+		WCHAR msgbuf[256];
+		D3DXVECTOR3 mousePos;
+		D3DXVECTOR2 pos;
+		//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
+		if (input->MatchMouseState(mouseState))
+		{
+			input->GetMousePos(&mousePos);
+			//swprintf_s(msgbuf, L"mouse posX is %f posY is %f\n", mousePos.x, mousePos.y);
+			//font->SetText(msgbuf);
+			pos.x = mousePos.x;
+			pos.y = mousePos.y;
+			ray = camera->ViewportPointToRay(pos);
+			if (ray != nullptr)
+			{
+				if (ray->RayHit(box))
+					font->SetText(L"hit");
+				else
+					font->SetText(L"not hit");
+			}
+		}
+	}
+
 	//char msgbuf[256];
 	//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
 	//OutputDebugStringA(msgbuf);
