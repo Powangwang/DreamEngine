@@ -223,15 +223,15 @@ VOID DMeshRender::DestroyMaterialAll()
 }
 
 
-//struct SkyboxVertex
-//{
-//	SkyboxVertex(float x, float y, float z)
-//	{
-//		_x = x; _y = y; _z = z;
-//	}
-//	float _x, _y, _z;
-//
-//};
+struct SkyboxVertex
+{
+	SkyboxVertex(float x, float y, float z)
+	{
+		_x = x; _y = y; _z = z;
+	}
+	float _x, _y, _z;
+
+};
 
 //BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 //{
@@ -243,66 +243,66 @@ VOID DMeshRender::DestroyMaterialAll()
 //}
 BOOL DMeshRender::CreateBox()
 {
-	//if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, 1, 1, 1, &m_pMess, NULL)))
-	//	return FALSE;
+	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, 1, 1, 1, &m_pMess, NULL)))
+		return FALSE;
 
-	//CreateMaterial();
-	////m_isEnabled = TRUE;
-	//if (FAILED(D3DXCreateMeshFVF(2, 4, D3DXMESH_MANAGED, D3DFVF_XYZ, DDEInitialize::gRootDevice, &m_pMess)))
-	//	return FALSE;
-	//SkyboxVertex* v = nullptr;
-	//m_pMess->LockVertexBuffer(0, (LPVOID*)&v);
-	////v[0] = SkyboxVertex(-1.0f, 1.0f, 1.0f);
-	////v[1] = SkyboxVertex(1.0f, 1.0f, 1.0f);
-	////v[2] = SkyboxVertex(-1.0f, -1.0f, 1.0f);
-	////v[3] = SkyboxVertex(1.0f, -1.0f, 1.0f);
-	//v[0] = SkyboxVertex(-1.0f, -1.0f, -1.0f);
-	//v[1] = SkyboxVertex(-1.0f, 1.0f, -1.0f);
-	//v[2] = SkyboxVertex(1.0f, 1.0f, -1.0f);
-	//v[3] = SkyboxVertex(1.0f, -1.0f, -1.0f);
+	CreateMaterial();
+	//m_isEnabled = TRUE;
+	if (FAILED(D3DXCreateMeshFVF(2, 4, D3DXMESH_32BIT, D3DFVF_XYZ, DDEInitialize::gRootDevice, &m_pMess)))
+		return FALSE;
+	SkyboxVertex* v = nullptr;
+	m_pMess->LockVertexBuffer(0, (LPVOID*)&v);
+	//v[0] = SkyboxVertex(-1.0f, 1.0f, 1.0f);
+	//v[1] = SkyboxVertex(1.0f, 1.0f, 1.0f);
+	//v[2] = SkyboxVertex(-1.0f, -1.0f, 1.0f);
+	//v[3] = SkyboxVertex(1.0f, -1.0f, 1.0f);
+	v[0] = SkyboxVertex(-1.0f, -1.0f, -1.0f);
+	v[1] = SkyboxVertex(-1.0f, 1.0f, -1.0f);
+	v[2] = SkyboxVertex(1.0f, 1.0f, -1.0f);
+	v[3] = SkyboxVertex(1.0f, -1.0f, -1.0f);
 
-	//m_pMess->UnlockVertexBuffer();
+	m_pMess->UnlockVertexBuffer();
 
-	//WORD * i = nullptr;
-	//m_pMess->LockIndexBuffer(0, (LPVOID*)&i);
+	DWORD * i = nullptr;
+	m_pMess->LockIndexBuffer(0, (LPVOID*)&i);
+	i[0] = 0; i[1] = 1; i[2] = 2;
+	i[3] = 0; i[4] = 2; i[5] = 3;
+	m_pMess->UnlockIndexBuffer();
+
+	//WORD* i = 0;
+	//m_pMess->LockIndexBuffer(0, (void**)&i);
+
+	//// fill in the front face index data
 	//i[0] = 0; i[1] = 1; i[2] = 2;
 	//i[3] = 0; i[4] = 2; i[5] = 3;
 	//m_pMess->UnlockIndexBuffer();
 
-	////WORD* i = 0;
-	////m_pMess->LockIndexBuffer(0, (void**)&i);
-
-	////// fill in the front face index data
-	////i[0] = 0; i[1] = 1; i[2] = 2;
-	////i[3] = 0; i[4] = 2; i[5] = 3;
-	////m_pMess->UnlockIndexBuffer();
 
 
-
-	//RENDERSTATE rstate;
-	//rstate.rsRenderStateType = D3DRS_FILLMODE;
-	////rstate.rsValue = D3DFILL_SOLID;
+	RENDERSTATE rstate;
+	rstate.rsRenderStateType = D3DRS_FILLMODE;
+	rstate.rsValue = D3DFILL_SOLID;
 	//rstate.rsValue = D3DFILL_WIREFRAME;
-	//AddRenderState(rstate);
+	AddRenderState(rstate);
 
-	//rstate.rsRenderStateType = D3DRS_CULLMODE;
-	//rstate.rsValue = D3DCULL_NONE;
-	//AddRenderState(rstate);
+	rstate.rsRenderStateType = D3DRS_CULLMODE;
+	rstate.rsValue = D3DCULL_NONE;
+	AddRenderState(rstate);
 
-	//rstate.rsRenderStateType = D3DRS_LIGHTING;
-	//rstate.rsValue = FALSE;
-	//AddRenderState(rstate);
+	rstate.rsRenderStateType = D3DRS_LIGHTING;
+	rstate.rsValue = FALSE;
+	AddRenderState(rstate);
 
-	//TEXTURESTATE tstate;
-	//tstate.tsStage = 0;
-	//tstate.tsTextureStateType = D3DTSS_COLOROP;
-	//tstate.tsValue = D3DTOP_SELECTARG1;
-	//AddTextureSate(tstate);		//将纹理颜色混合的第一个参数的颜色值用于输出
+	TEXTURESTATE tstate;
+	tstate.tsStage = 0;
+	tstate.tsTextureStateType = D3DTSS_COLOROP;
+	tstate.tsValue = D3DTOP_SELECTARG1;
+	AddTextureSate(tstate);		//将纹理颜色混合的第一个参数的颜色值用于输出
 
-	//tstate.tsStage = 0;
-	//tstate.tsTextureStateType = D3DTSS_COLORARG1;
-	//tstate.tsValue = D3DTA_TEXTURE;
-	//AddTextureSate(tstate);		//纹理颜色混合的第一个参数的值就取纹理颜色值
+	tstate.tsStage = 0;
+	tstate.tsTextureStateType = D3DTSS_COLORARG1;
+	tstate.tsValue = D3DTA_TEXTURE;
+	AddTextureSate(tstate);		//纹理颜色混合的第一个参数的值就取纹理颜色值
 
 	return 0;
 }

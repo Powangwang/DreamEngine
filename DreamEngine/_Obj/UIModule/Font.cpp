@@ -3,6 +3,7 @@
 #include <tchar.h>
 DFont::DFont()
 {
+
 	WCHAR fontName[] = L"Times New Roman";
 	BOOL ret = FALSE;
 	ret = InitDxFont(20, 0, 0, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, fontName);

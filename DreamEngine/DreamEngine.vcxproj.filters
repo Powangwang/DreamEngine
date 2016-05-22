@@ -49,6 +49,18 @@
     <Filter Include="源文件\Obj\UIModule">
       <UniqueIdentifier>{b87c5967-c17e-4320-8633-45e4425f201f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\CommUtil\UtilModule">
+      <UniqueIdentifier>{e6878493-a355-4f8b-b0a4-e9aecdc84c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\CommUtil\UtilModule">
+      <UniqueIdentifier>{d6cf9f2a-1ec0-4c60-ba87-56887063ed9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\CommUtil\FrameModule">
+      <UniqueIdentifier>{face4135-2df4-42ae-8fa3-73ae1abfc221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CommUtil\FrameModule">
+      <UniqueIdentifier>{f400d305-1303-4329-ab8a-21cdb35c5827}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -75,9 +87,6 @@
     <ClCompile Include="_Obj\Input.cpp">
       <Filter>源文件\Obj</Filter>
     </ClCompile>
-    <ClCompile Include="_CommUtil\DEInitialize.cpp">
-      <Filter>源文件\CommUtil</Filter>
-    </ClCompile>
     <ClCompile Include="_Obj\RenderModule\Terrain.cpp">
       <Filter>源文件\Obj\RenderModule</Filter>
     </ClCompile>
@@ -89,6 +98,12 @@
     </ClCompile>
     <ClCompile Include="_Obj\GameObject.cpp">
       <Filter>源文件\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="_CommUtil\UtilModule\String.cpp">
+      <Filter>源文件\CommUtil\UtilModule</Filter>
+    </ClCompile>
+    <ClCompile Include="_CommUtil\FrameModule\DEInitialize.cpp">
+      <Filter>源文件\CommUtil\FrameModule</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +137,6 @@
     <ClInclude Include="_Obj\Input.h">
       <Filter>头文件\Obj</Filter>
     </ClInclude>
-    <ClInclude Include="_CommUtil\DEInitialize.h">
-      <Filter>头文件\CommUtil</Filter>
-    </ClInclude>
     <ClInclude Include="_Obj\RenderModule\Terrain.h">
       <Filter>头文件\Obj\RenderModule</Filter>
     </ClInclude>
@@ -136,6 +148,18 @@
     </ClInclude>
     <ClInclude Include="_Obj\GameObject.h">
       <Filter>头文件\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="_CommUtil\UtilModule\String.h">
+      <Filter>头文件\CommUtil\UtilModule</Filter>
+    </ClInclude>
+    <ClInclude Include="_CommUtil\CommUtil.h">
+      <Filter>头文件\CommUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="DEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="_CommUtil\FrameModule\DEInitialize.h">
+      <Filter>头文件\CommUtil\FrameModule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

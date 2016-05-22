@@ -1,6 +1,7 @@
 #include "Terrain.h"
 #include "RenderModule/MeshRender.h"
 
+#define VERTEX16BIT	65535
 #define TERRAIN_FVF (D3DFVF_XYZ | D3DFVF_TEX1)
 struct TerrainVertex
 {
@@ -29,6 +30,7 @@ DTerrain::~DTerrain()
 {
 }
 
+//地形读取比较耗时，后期采用异步读取方式
 BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
 {
 	if (!ReadRawFile(terrainFilePath))
@@ -40,7 +42,13 @@ BOOL DTerrain::CreateTerrain(WCHAR* terrainFilePath)
 	DWORD numVertices = (m_cellsPerRow + 1) * (m_cellsPerCol + 1);
 	DWORD numTriangle = m_cellsPerRow * m_cellsPerCol * 2;
 	LPD3DXMESH terrainMesh = nullptr;
-	if (FAILED(D3DXCreateMeshFVF(numTriangle, numVertices, 0, TERRAIN_FVF, DDEInitialize::gRootDevice, &terrainMesh)))
+
+	DWORD meshOpt = 0;
+	if (numVertices > VERTEX16BIT || numTriangle > VERTEX16BIT)
+	{
+		meshOpt |= D3DXMESH_32BIT;
+	}
+	if (FAILED(D3DXCreateMeshFVF(numTriangle, numVertices, meshOpt, TERRAIN_FVF, DDEInitialize::gRootDevice, &terrainMesh)))
 		return FALSE;
 
 	if (!InitVertices(terrainMesh))
@@ -108,29 +116,54 @@ BOOL DTerrain::InitVertices(LPD3DXMESH terrainMesh)
 BOOL DTerrain::InitIndices(LPD3DXMESH terrainMesh)
 {
 	HRESULT hr = -1;
-	DWORD numTriangle = m_cellsPerRow * m_cellsPerCol * 2;
 
 
-	WORD* indices = nullptr;
 	DWORD baseIndex = 0;
 	DWORD vertsPerRow = m_cellsPerRow + 1;
-	DWORD vertsPerCol = m_cellsPerCol + 1;
-	terrainMesh->LockIndexBuffer(0, (PVOID*)&indices);
-	for (DWORD i = 0; i < m_cellsPerCol; i++)
+	
+	VOID* indices = nullptr;
+	terrainMesh->LockIndexBuffer(0, &indices);
+
+	DWORD numVertices = (m_cellsPerRow + 1) * (m_cellsPerCol + 1);
+	DWORD numTriangle = m_cellsPerRow * m_cellsPerCol * 2;
+
+	if (numVertices > VERTEX16BIT || numTriangle > VERTEX16BIT)
 	{
-		for (DWORD j = 0; j < m_cellsPerRow; j++)
+		for (DWORD i = 0; i < m_cellsPerCol; i++)
 		{
-			indices[baseIndex] = (WORD)(i   * vertsPerRow + j);
-			indices[baseIndex + 1] = (WORD)(i   * vertsPerRow + j + 1);
-			indices[baseIndex + 2] = (WORD)((i + 1) * vertsPerRow + j);
+			for (DWORD j = 0; j < m_cellsPerRow; j++)
+			{
+				((DWORD*)indices)[baseIndex] = (DWORD)(i   * vertsPerRow + j);
+				((DWORD*)indices)[baseIndex + 1] = (DWORD)(i   * vertsPerRow + j + 1);
+				((DWORD*)indices)[baseIndex + 2] = (DWORD)((i + 1) * vertsPerRow + j);
 
-			indices[baseIndex + 3] = (WORD)((i + 1) * vertsPerRow + j);
-			indices[baseIndex + 4] = (WORD)(i   * vertsPerRow + j + 1);
-			indices[baseIndex + 5] = (WORD)((i + 1) * vertsPerRow + j + 1);
+				((DWORD*)indices)[baseIndex + 3] = (DWORD)((i + 1) * vertsPerRow + j);
+				((DWORD*)indices)[baseIndex + 4] = (DWORD)(i   * vertsPerRow + j + 1);
+				((DWORD*)indices)[baseIndex + 5] = (DWORD)((i + 1) * vertsPerRow + j + 1);
 
-			baseIndex += 6;
+				baseIndex += 6;
+			}
 		}
 	}
+	else
+	{
+		for (DWORD i = 0; i < m_cellsPerCol; i++)
+		{
+			for (DWORD j = 0; j < m_cellsPerRow; j++)
+			{
+				((WORD*)indices)[baseIndex] = (WORD)(i   * vertsPerRow + j);
+				((WORD*)indices)[baseIndex + 1] = (WORD)(i   * vertsPerRow + j + 1);
+				((WORD*)indices)[baseIndex + 2] = (WORD)((i + 1) * vertsPerRow + j);
+
+				((WORD*)indices)[baseIndex + 3] = (WORD)((i + 1) * vertsPerRow + j);
+				((WORD*)indices)[baseIndex + 4] = (WORD)(i   * vertsPerRow + j + 1);
+				((WORD*)indices)[baseIndex + 5] = (WORD)((i + 1) * vertsPerRow + j + 1);
+
+				baseIndex += 6;
+			}
+		}
+	}
+	
 	terrainMesh->UnlockIndexBuffer();
 
 	return TRUE;

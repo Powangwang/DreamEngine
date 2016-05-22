@@ -1,5 +1,4 @@
 #include "BaseCom.h"
-#include "../_CommUtil/DEInitialize.h"
 
 DBaseCom::DBaseCom(wstring comName, COMTYPE type, DGameObject* gameObj, DWORD indexInParent)
 	:m_comName(comName), m_comType(type), m_gameObj(gameObj), m_indexInParent(indexInParent),

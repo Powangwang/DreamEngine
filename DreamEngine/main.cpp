@@ -1,8 +1,4 @@
-//#include "_CommAction\DEInitialize.h"
-//#include "_Obj\RenderModule\DCamera.h"
-
-#include "DEInitialize.h"
-#include "CommObj.h"
+#include "DEngine.h"
 
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
@@ -155,11 +151,13 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
-	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -5.0f), Space::World);
+	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
+	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -5.0f), Space::World);
 
-	terrain = new DTerrain(64, 64, 10, 2);
-	terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
+	terrain = new DTerrain(256, 256, 10, 2);
+	terrain->CreateTerrain(L"..\\Resource\\coastMountainEx.raw");	
+	//terrain = new DTerrain(64, 64, 10, 2);
+	//terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
 	skybox = new DSky(20000.0f);
 	skybox->CreateSkybox(L"..\\Resource\\skybox\\frontsnow1.jpg", L"..\\Resource\\skybox\\backsnow1.jpg",
@@ -168,7 +166,7 @@ bool InitializeObjects()
 
 	box = new DGameObject();
 	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	meshRender->CreateMeshTeapot();
+	//meshRender->CreateMeshTeapot();
 	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
 	//meshRender->CreateBox();
 
@@ -176,6 +174,8 @@ bool InitializeObjects()
 	light = new DLight();
 
 	font = new DFont();
+
+
 	font->SetText(L"hello world", D3DXCOLOR(255, 0, 0, 255));
 	font->GetTransform()->Translate(D3DXVECTOR3(10.0f, 5.0f, 0), Space::World);
 	return true;
@@ -193,7 +193,7 @@ void RenderScene()
 	skybox->Run();
 	font->Run();
 	//box->Run();
-	//terrain->Run();
+	terrain->Run();
 
 	//MOUSESTATE mouseState;
 	//input->GetMouseState();

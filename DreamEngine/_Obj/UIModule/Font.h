@@ -15,5 +15,5 @@ private:
 private:
 	TCHAR* m_textBuff;
 	D3DXCOLOR m_textColor;
-	LPD3DXFONT m_dxFont;				//directx自带显示模式
+	LPD3DXFONT m_dxFont;				
 };

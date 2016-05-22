@@ -3,8 +3,6 @@
 #include<d3dx9.h>
 #include <string>
 #include <vector>
-//#include "CommRenderHead.h"
-//#include "../_Obj/GameObject.h"
 using namespace std;
 
 class DGameObject;

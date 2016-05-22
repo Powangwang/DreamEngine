@@ -110,7 +110,7 @@ BOOL DSky::InitIndices(LPD3DXMESH skyboxMesh, DWORD faceCount)
 	skyboxMesh->LockAttributeBuffer(0, &attributeBuffer);
 	if (attributeBuffer == nullptr)
 		return FALSE;
-	for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
+	for (DWORD faceIndex = 0; faceIndex < faceCount; faceIndex++)
 	{
 		attributeBuffer[0 + faceIndex * 2] = faceIndex;
 		attributeBuffer[1 + faceIndex * 2] = faceIndex;
