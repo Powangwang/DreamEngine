@@ -21,7 +21,7 @@ DSky::~DSky()
 {
 }
 
-BOOL DSky::CreateSkybox(LPWSTR frontTextureFile, LPWSTR backTextureFile, LPWSTR leftTextureFile, LPWSTR rightTextureFile, LPWSTR topTextureFile)
+BOOL DSky::CreateSkybox(LPCWSTR frontTextureFile, LPCWSTR backTextureFile, LPCWSTR leftTextureFile, LPCWSTR rightTextureFile, LPCWSTR topTextureFile)
 {
 	BOOL ret = FALSE;
 	DMeshRender* meshRender = (DMeshRender*)AddComponent(COMTYPE::DERenderMesh);
@@ -36,7 +36,7 @@ BOOL DSky::CreateSkybox(LPWSTR frontTextureFile, LPWSTR backTextureFile, LPWSTR 
 	if (!InitIndices(skyMesh, 5))
 		return FALSE;
 
-	LPWSTR texFiles[5] = { frontTextureFile, backTextureFile, leftTextureFile, rightTextureFile, topTextureFile };
+	LPCWSTR texFiles[5] = { frontTextureFile, backTextureFile, leftTextureFile, rightTextureFile, topTextureFile };
 	if (!InitTexture(meshRender, texFiles, 5))
 		return FALSE;
 
@@ -122,7 +122,7 @@ BOOL DSky::InitIndices(LPD3DXMESH skyboxMesh, DWORD faceCount)
 	return TRUE;
 }
 
-BOOL DSky::InitTexture(DMeshRender * meshRender, LPWSTR * textureFiles, INT fileCount)
+BOOL DSky::InitTexture(DMeshRender * meshRender, LPCWSTR * textureFiles, INT fileCount)
 {
 	DMaterialRender* matRender = nullptr;
 	for (INT textureIndex = 0; textureIndex < fileCount; textureIndex++)
@@ -140,19 +140,19 @@ BOOL DSky::InitTexture(DMeshRender * meshRender, LPWSTR * textureFiles, INT file
 
 VOID DSky::InitEffect(DMeshRender * meshRender)
 {
-	RENDERSTATE rstate;
-	rstate.rsRenderStateType = D3DRS_FILLMODE;
-	rstate.rsValue = D3DFILL_SOLID;
-	//rstate.rsValue = D3DFILL_WIREFRAME;
-	meshRender->AddRenderState(rstate);
+	//RENDERSTATE rstate;
+	//rstate.rsRenderStateType = D3DRS_FILLMODE;
+	//rstate.rsValue = D3DFILL_SOLID;
+	////rstate.rsValue = D3DFILL_WIREFRAME;
+	//meshRender->AddRenderState(rstate);
 
-	rstate.rsRenderStateType = D3DRS_CULLMODE;
-	rstate.rsValue = D3DCULL_CCW;
-	meshRender->AddRenderState(rstate);
+	//rstate.rsRenderStateType = D3DRS_CULLMODE;
+	//rstate.rsValue = D3DCULL_CCW;
+	//meshRender->AddRenderState(rstate);
 
-	rstate.rsRenderStateType = D3DRS_LIGHTING;
-	rstate.rsValue = FALSE;
-	meshRender->AddRenderState(rstate);
+	//rstate.rsRenderStateType = D3DRS_LIGHTING;
+	//rstate.rsValue = FALSE;
+	//meshRender->AddRenderState(rstate);
 
 	TEXTURESTATE tstate;
 	tstate.tsStage = 0;
@@ -164,6 +164,17 @@ VOID DSky::InitEffect(DMeshRender * meshRender)
 	tstate.tsTextureStateType = D3DTSS_COLORARG1;
 	tstate.tsValue = D3DTA_TEXTURE;
 	meshRender->AddTextureSate(tstate);		//纹理颜色混合的第一个参数的值就取纹理颜色值
+
+	SAMPLERSTATE sstate;
+	sstate.ssSampler = 0;
+	sstate.ssSamplerStateType = D3DSAMP_ADDRESSU;
+	sstate.ssValue = D3DTADDRESS_MIRROR;
+	meshRender->AddSamplerState(sstate);
+
+	sstate.ssSampler = 0;
+	sstate.ssSamplerStateType = D3DSAMP_ADDRESSV;
+	sstate.ssValue = D3DTADDRESS_MIRROR;
+	meshRender->AddSamplerState(sstate);
 
 }
 

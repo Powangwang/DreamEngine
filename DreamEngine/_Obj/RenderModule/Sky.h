@@ -6,13 +6,13 @@ class DSky : public DGameObject
 public:
 	DSky(FLOAT length);
 	~DSky();
-	BOOL CreateSkybox(LPWSTR frontTextureFile, LPWSTR backTextureFile, LPWSTR leftTextureFile,
-		LPWSTR rightTextureFile, LPWSTR topTextureFile);
+	BOOL CreateSkybox(LPCWSTR frontTextureFile, LPCWSTR backTextureFile, LPCWSTR leftTextureFile,
+		LPCWSTR rightTextureFile, LPCWSTR topTextureFile);
 
 private:
 	BOOL InitVertices(LPD3DXMESH skyboxMesh);
 	BOOL InitIndices(LPD3DXMESH skyboxMesh, DWORD faceCount);
-	BOOL InitTexture(DMeshRender* meshRender, LPWSTR* textureFiles, INT fileCount);
+	BOOL InitTexture(DMeshRender* meshRender, LPCWSTR* textureFiles, INT fileCount);
 	VOID InitEffect(DMeshRender* meshRender);
 private:
 	FLOAT m_skyLength;

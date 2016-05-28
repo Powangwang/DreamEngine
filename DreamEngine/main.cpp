@@ -1,5 +1,5 @@
 #include "DEngine.h"
-
+#include <math.h>
 #define WINDOW_CLASS    L"UGPDX"
 #define WINDOW_NAME     L"DREAM ENGINE"
 #define WINDOW_WIDTH    1024
@@ -10,13 +10,15 @@ bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen);
 bool InitializeObjects();
 void RenderScene();
 void Shutdown();
+void InputCotrol();
+
 
 //Teapot tp;
 DSky* skybox;
 DTerrain* terrain;
 DCamera* camera;
 DLight* light;
-DGameObject* box;
+DGameObject* gameObject;
 DInput* input;
 DFont * font;
 
@@ -143,7 +145,7 @@ bool InitializeD3D(HINSTANCE hInst, HWND hWnd, bool fullscreen)
 
 	input = new DInput(hInst, hWnd);
 	input->CreateDevice(INPUTDEVICE::MouseDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::NonExclusive);
-	input->CreateDevice(INPUTDEVICE::KeyboardDevice, COOPERALEVEL::ForeGround | COOPERALEVEL::Exclusive);
+	input->CreateDevice(INPUTDEVICE::KeyboardDevice, COOPERALEVEL::BackGround | COOPERALEVEL::Exclusive);
 
 	return true;
 }
@@ -152,23 +154,26 @@ bool InitializeObjects()
 {
 	camera = new DCamera();
 	camera->SetCameraZf(300000.0f);
-	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 500.0f, -15.0f), Space::World);
+	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -15.0f), Space::World);
 	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -600.0f), Space::World);
 
 	terrain = new DTerrain(256, 256, 10, 2);
-	terrain->CreateTerrain(L"..\\Resource\\coastMountainEx.raw");	
+	terrain->CreateTerrain(L"..\\Resource\\coastMountainEx.raw", L"..\\Resource\\terrainstone.jpg");	
 	//terrain = new DTerrain(64, 64, 10, 2);
 	//terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
+	wstring skyPath = L"..\\Resource\\skybox\\Sun\\";
+	//LPCWSTR pp = skyPath.data();
 	skybox = new DSky(20000.0f);
-	skybox->CreateSkybox(L"..\\Resource\\skybox\\frontsnow1.jpg", L"..\\Resource\\skybox\\backsnow1.jpg",
-		L"..\\Resource\\skybox\\leftsnow1.jpg", L"..\\Resource\\skybox\\rightsnow1.jpg", L"..\\Resource\\skybox\\topsnow1.jpg");
+	skybox->CreateSkybox( (skyPath + wstring(L"Front.png")).data(), (skyPath + wstring(L"Back.png")).data(),
+		(skyPath + wstring(L"Left.png")).data(), (skyPath + wstring(L"Right.png")).data(), (skyPath + wstring(L"Top.png")).data());
 	skybox->GetTransform()->Translate(D3DXVECTOR3(0.0f, -5000.0f, 0.0f), Space::World);
 
-	box = new DGameObject();
-	box->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -590.0f), Space::World);
-	DMeshRender* meshRender =  (DMeshRender*)box->AddComponent(COMTYPE::DERenderMesh);
-	meshRender->CreateMeshTeapot();
+	gameObject = new DGameObject();
+	gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, 30.0f, -400.0f), Space::World);
+	DMeshRender* meshRender =  (DMeshRender*)gameObject->AddComponent(COMTYPE::DERenderMesh);
+	meshRender->CreateMeshFromFileX(L"..\\Resource\\MeshFile\\King\\knight.X", D3DXMESH_MANAGED);
+	//meshRender->CreateMeshTeapot();
 	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
 	//meshRender->CreateBox();
 
@@ -178,7 +183,7 @@ bool InitializeObjects()
 	font = new DFont();
 
 
-	font->SetText(L"hello world", D3DXCOLOR(255, 0, 0, 255));
+	font->SetText(L"hello world", D3DXCOLOR(0, 0, 0, 255));
 	font->GetTransform()->Translate(D3DXVECTOR3(10.0f, 5.0f, 0), Space::World);
 	return true;
 }
@@ -192,82 +197,13 @@ void RenderScene()
 
 	camera->BegineShowObject();
 	skybox->Run();
-	font->Run();
-	box->Run();
+	gameObject->Run();
+	//font->Run();
 	terrain->Run();
-
-	if (input->GetMouseState())
-	{
-		MOUSESTATE mouseState;
-		mouseState = MOUSESTATE::Move;
-
-		WCHAR msgbuf[256];
-		D3DXVECTOR3 mousePos;
-		D3DXVECTOR2 pos;
-		//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
-		if (input->MatchMouseState(mouseState))
-		{
-			input->GetMousePos(&mousePos);
-			//swprintf_s(msgbuf, L"mouse posX is %f posY is %f\n", mousePos.x, mousePos.y);
-			//font->SetText(msgbuf);
-			pos.x = mousePos.x;
-			pos.y = mousePos.y;
-			ray = camera->ViewportPointToRay(pos);
-			if (ray != nullptr)
-			{
-				if (ray->RayHit(box))
-					font->SetText(L"hit");
-				else
-					font->SetText(L"not hit");
-			}
-		}
-	}
-
-	//char msgbuf[256];
-	//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
-	//OutputDebugStringA(msgbuf);
-	//char msgbuf[256];
-	//sprintf_s(msgbuf, "mouse X is %d, Y is %d, LClick is %d, RClick is %d aaaaaa is %d\n", 
-	//	mouseState.lX, mouseState.lY, mouseState.rgbButtons[0], mouseState.rgbButtons[1], mouseState.lZ);
-	//OutputDebugStringA(msgbuf;)
-
-	KEYBOARDINFO keyInfo;
-	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPressing;
-	if(input->GetKeyboardState())
-	{
-		float angle = -5.0f;
-		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_A;
-		if (input->MatchKeyboardState(keyInfo))
-		{
-			camera->GetTransform()->Rotate(D3DXVECTOR3(angle, 0.0f, 0.0f), Space::Local);
-		}
-		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_D;
-		if(input->MatchKeyboardState(keyInfo))
-		{
-			camera->GetTransform()->Rotate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::Local);
-		}
-
-		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_W;
-		if (input->MatchKeyboardState(keyInfo))
-		{
-			box->GetTransform()->Rotate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::Local);
-		}
-	}
-
-
-	Sleep(100);
-
-
-	//terrain->ShowTerrain(TRUE);
-	//skybox.ShowSkyBox(FALSE);
-	//tp.Show();
-	////WCHAR buff[1024] = { 0 };
-	////D3DXVECTOR3 vector = camera.GetPosition();
-	////swprintf_s(buff, L"camera position x %f  y %f  z %f", vector.x, vector.y, vector.z);
-	//font->ShowText(0, 0, D3DXCOLOR(255, 0, 0, 255), buff);
-
-
 	camera->EndShowObject();
+
+	//Sleep(100);
+	InputCotrol();
 }
 
 
@@ -277,6 +213,106 @@ void Shutdown()
 	//tp.Destroy();
 
 	DDEInitialize::EndInitD3D();
+}
+
+void InputCotrol()
+{
+	if (input->GetMouseState())
+	{
+		//MOUSESTATE mouseState;
+		//mouseState = MOUSESTATE::LeftClick;
+
+		WCHAR msgbuf[256];
+		D3DXVECTOR3 mousePos;
+		//sprintf_s(msgbuf, "mouse Xxxxxxxx is %d\n", mouseState);
+		if (input->MatchMouseState(MOUSESTATE::LeftClick))
+		{
+			D3DXVECTOR2 pos;
+			input->GetMousePos(&pos);
+			//swprintf_s(msgbuf, L"mouse clicked");
+			//font->SetText(msgbuf, D3DXCOLOR(255, 255, 255, 255));
+			//pos.x = mousePos.x;
+			//pos.y = mousePos.y;
+			ray = camera->ViewportPointToRay(pos);
+			if (ray != nullptr)
+			{
+				if (ray->RayHit(gameObject))
+					font->SetText(L"hit", D3DXCOLOR(255, 255, 255, 255));
+				else
+					font->SetText(L"not hit", D3DXCOLOR(255, 255, 255, 255));
+			}
+		}
+		else if (input->MatchMouseState((MOUSESTATE)(MOUSESTATE::LeftDrag | MOUSESTATE::Wheel)))
+		{
+			input->GetRltMousePos(&mousePos);
+			mousePos.x = -mousePos.x;
+			DTransform* cameraTrans = camera->GetTransform();
+			cameraTrans->Translate(mousePos, Space::Local);
+
+			D3DXVECTOR3 cameraPos;
+			cameraTrans->GetPosition(&cameraPos, Space::Local);
+			swprintf_s(msgbuf, L"camera pos is %f  %f  %f \n", cameraPos.x, cameraPos.y, cameraPos.z);
+			font->SetText(msgbuf, D3DXCOLOR(255, 255, 255, 255));
+		}
+		else if (input->MatchMouseState(MOUSESTATE::RightDrag))
+		{
+			input->GetRltMousePos(&mousePos);
+			D3DXVECTOR3 cameraRotate;
+			
+			if(abs(mousePos.x) - abs(mousePos.y) > 2)
+				mousePos.y = 0;
+			if(abs(mousePos.y) - abs(mousePos.x) > 2)
+				mousePos.x = 0;
+
+			cameraRotate.x = mousePos.y;
+			cameraRotate.y = mousePos.x;
+			cameraRotate.z = 0;
+			cameraRotate *= D3DX_PI * 0.1f;
+			camera->GetTransform()->Rotate(cameraRotate, Space::Local);
+		}
+
+
+
+	}
+
+
+	KEYBOARDINFO keyInfo;
+	keyInfo.kiKeyboardState = KEYBOARDSTATE::KeyPressing;
+	if (input->GetKeyboardState())
+	{
+		float angle = 5.0f;
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_W;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, angle, 0.0f), Space::World);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_S;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, -angle, 0.0f), Space::World);
+		}
+
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_A;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(-angle, 0.0f, 0.0f), Space::World);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_D;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(angle, 0.0f, 0.0f), Space::World);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_Q;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Rotate(D3DXVECTOR3(0.0f, angle, 0.0f), Space::Local);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_E;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Rotate(D3DXVECTOR3(0.0f, -angle, 0.0f), Space::Local);
+		}
+	}
 }
 
 

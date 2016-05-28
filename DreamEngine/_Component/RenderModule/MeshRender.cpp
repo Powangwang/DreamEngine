@@ -1,9 +1,9 @@
 #include "MeshRender.h"
-
+#include "UtilModule/String.h"
 
 DMeshRender::DMeshRender(DGameObject* gameObj, DWORD indexInParent)
 	:DBaseCom(L"", COMTYPE::DERenderMesh, gameObj, indexInParent),
-	m_pMess(nullptr)
+	m_pMesh(nullptr)
 {
 	//DMaterialRender * matRender = new DMaterialRender(gameObj, 0);
 	//m_matRenders.push_back(matRender);
@@ -20,13 +20,13 @@ DMeshRender::~DMeshRender()
 	}
 	m_matRenders.clear();
 
-	if(m_pMess != nullptr)
-		m_pMess->Release();
+	if(m_pMesh != nullptr)
+		m_pMesh->Release();
 }
 
 BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 {
-	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, size.x, size.y, size.z, &m_pMess, nullptr)))
+	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, size.x, size.y, size.z, &m_pMesh, nullptr)))
 		return FALSE;
 	CreateMaterial();
 	//m_isEnabled = TRUE;
@@ -35,7 +35,7 @@ BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 
 BOOL DMeshRender::CreateMeshSphere(FLOAT radius)
 {
-	if (FAILED(D3DXCreateSphere(DDEInitialize::gRootDevice, radius, 32, 32, &m_pMess, nullptr)))
+	if (FAILED(D3DXCreateSphere(DDEInitialize::gRootDevice, radius, 32, 32, &m_pMesh, nullptr)))
 		return FALSE;
 	CreateMaterial();
 	m_isEnabled = TRUE;
@@ -44,7 +44,7 @@ BOOL DMeshRender::CreateMeshSphere(FLOAT radius)
 
 BOOL DMeshRender::CreateMeshTeapot()
 {
-	if (FAILED(D3DXCreateTeapot(DDEInitialize::gRootDevice, &m_pMess, nullptr)))
+	if (FAILED(D3DXCreateTeapot(DDEInitialize::gRootDevice, &m_pMesh, nullptr)))
 		return FALSE;
 	CreateMaterial();
 	m_isEnabled = TRUE;
@@ -60,19 +60,30 @@ BOOL DMeshRender::CreateMeshFromFileX(LPCWSTR pFileName, DWORD options)
 	DWORD NumMaterials;
 
 	if (FAILED(D3DXLoadMeshFromX(pFileName, options, DDEInitialize::gRootDevice, 
-		&ppAdjacency, &ppMaterials, &ppEffectInstances, &NumMaterials, &m_pMess)))
+		&ppAdjacency, &ppMaterials, &ppEffectInstances, &NumMaterials, &m_pMesh)))
 		return FALSE;
-
+	wstring filePath;
+	DString::GetFilePath(pFileName, &filePath);
 	D3DXMATERIAL *pMtrls = (D3DXMATERIAL*)ppMaterials->GetBufferPointer();
 	LPDIRECT3DTEXTURE9 tmpTexture = nullptr;
 	for (DWORD matRenderIndex = 0; matRenderIndex < NumMaterials; matRenderIndex++)
 	{
-		if (!FAILED(D3DXCreateTextureFromFileA(DDEInitialize::gRootDevice, pMtrls[matRenderIndex].pTextureFilename, &tmpTexture)))
-		{
+		//if (!FAILED(D3DXCreateTextureFromFileA(DDEInitialize::gRootDevice, pMtrls[matRenderIndex].pTextureFilename, &tmpTexture)))
+		//{
 			DMaterialRender* matRender = new DMaterialRender(m_gameObj, 0, pMtrls[matRenderIndex].MatD3D, tmpTexture);
+			if (filePath.size() > 0)
+			{
+				string cFile = pMtrls[matRenderIndex].pTextureFilename;
+				wstring wFile;
+				DString::Ansi2WChar(&cFile, &wFile);
+				filePath += wFile;
+				matRender->LoadTexture(filePath.data());
+			}
 			m_matRenders.push_back(matRender);
-		}
+		//}
 	}
+	m_pMesh->OptimizeInplace(D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_STRIPREORDER,
+		(DWORD*)ppAdjacency->GetBufferPointer(), NULL, NULL, NULL);
 	m_isEnabled = TRUE;
 	return TRUE;
 }
@@ -88,17 +99,13 @@ VOID DMeshRender::Run()
 {
 	if (!m_isEnabled)
 		return ;
-	//DDEInitialize::gRootDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-	//DDEInitialize::gRootDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	//DDEInitialize::gRootDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	//DDEInitialize::gRootDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	ApplyRenderState();
 
 	DWORD NumMaterials = m_matRenders.size();
 	for (DWORD runIndex = 0; runIndex < NumMaterials; runIndex++)
 	{
 		m_matRenders[runIndex]->Run();
-		m_pMess->DrawSubset(runIndex);
+		m_pMesh->DrawSubset(runIndex);
 	}
 
 	ApplyOrignRenderState();
@@ -114,12 +121,12 @@ DMaterialRender * DMeshRender::GetMaterialRender(DWORD matIndex)
 
 LPD3DXMESH DMeshRender::GetMesh()
 {
-	return m_pMess;
+	return m_pMesh;
 }
 
 VOID DMeshRender::SetMesh(LPD3DXMESH mess)
 {
-	m_pMess = mess;
+	m_pMesh = mess;
 }
 
 VOID DMeshRender::AddRenderState(RENDERSTATE & renderState)
@@ -235,7 +242,7 @@ struct SkyboxVertex
 
 //BOOL DMeshRender::CreateMeshBox(D3DXVECTOR3 size)
 //{
-//	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, size.x, size.y, size.z, &m_pMess, nullptr)))
+//	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, size.x, size.y, size.z, &m_pMesh, nullptr)))
 //		return FALSE;
 //	CreateMaterial();
 //	//m_isEnabled = TRUE;
@@ -243,15 +250,15 @@ struct SkyboxVertex
 //}
 BOOL DMeshRender::CreateBox()
 {
-	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, 1, 1, 1, &m_pMess, NULL)))
+	if (FAILED(D3DXCreateBox(DDEInitialize::gRootDevice, 1, 1, 1, &m_pMesh, NULL)))
 		return FALSE;
 
 	CreateMaterial();
 	//m_isEnabled = TRUE;
-	if (FAILED(D3DXCreateMeshFVF(2, 4, D3DXMESH_32BIT, D3DFVF_XYZ, DDEInitialize::gRootDevice, &m_pMess)))
+	if (FAILED(D3DXCreateMeshFVF(2, 4, D3DXMESH_32BIT, D3DFVF_XYZ, DDEInitialize::gRootDevice, &m_pMesh)))
 		return FALSE;
 	SkyboxVertex* v = nullptr;
-	m_pMess->LockVertexBuffer(0, (LPVOID*)&v);
+	m_pMesh->LockVertexBuffer(0, (LPVOID*)&v);
 	//v[0] = SkyboxVertex(-1.0f, 1.0f, 1.0f);
 	//v[1] = SkyboxVertex(1.0f, 1.0f, 1.0f);
 	//v[2] = SkyboxVertex(-1.0f, -1.0f, 1.0f);
@@ -261,21 +268,21 @@ BOOL DMeshRender::CreateBox()
 	v[2] = SkyboxVertex(1.0f, 1.0f, -1.0f);
 	v[3] = SkyboxVertex(1.0f, -1.0f, -1.0f);
 
-	m_pMess->UnlockVertexBuffer();
+	m_pMesh->UnlockVertexBuffer();
 
 	DWORD * i = nullptr;
-	m_pMess->LockIndexBuffer(0, (LPVOID*)&i);
+	m_pMesh->LockIndexBuffer(0, (LPVOID*)&i);
 	i[0] = 0; i[1] = 1; i[2] = 2;
 	i[3] = 0; i[4] = 2; i[5] = 3;
-	m_pMess->UnlockIndexBuffer();
+	m_pMesh->UnlockIndexBuffer();
 
 	//WORD* i = 0;
-	//m_pMess->LockIndexBuffer(0, (void**)&i);
+	//m_pMesh->LockIndexBuffer(0, (void**)&i);
 
 	//// fill in the front face index data
 	//i[0] = 0; i[1] = 1; i[2] = 2;
 	//i[3] = 0; i[4] = 2; i[5] = 3;
-	//m_pMess->UnlockIndexBuffer();
+	//m_pMesh->UnlockIndexBuffer();
 
 
 

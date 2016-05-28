@@ -7,9 +7,9 @@
 */
 #define DEVICEPUSH	0x80
 
-DInput::DInput(HINSTANCE hIns, HWND hWnd):
+DInput::DInput(HINSTANCE hIns, HWND hWnd) :
 	m_hIns(hIns), m_hWnd(hWnd), m_input(nullptr), m_mouseDevice(nullptr), m_keyboardDevice(nullptr),
-	m_prevMouseState(MOUSESTATE::NonState),
+	m_prevMouseState(MOUSESTATE::NonState), m_prevTick(0),
 	m_isMouseAction(FALSE),m_isKeyboardAction(FALSE)
 {
 	ZeroMemory(m_mousePos, sizeof(D3DXVECTOR3));
@@ -59,10 +59,14 @@ BOOL DInput::CreateDevice(INPUTDEVICE inputDevice, DWORD cooperaFlag)
 
 
 
+//DoubleClick响应判断不正确，待改
 BOOL DInput::GetMouseState()
 {
 
 	//OutputDebugStringA("111111111111\n");
+	DWORD tInterval = 100;		//间隔100ms
+	DWORD curTick = GetTickCount();
+
 	BOOL isAction = TRUE;
 	MOUSESTATE tmpMouseState = MOUSESTATE::NonState;
 	if (GetDeviceState(INPUTDEVICE::MouseDevice) == TRUE)
@@ -74,111 +78,113 @@ BOOL DInput::GetMouseState()
 				*(LONG*)m_diMouseState.rgbButtons == 0 && !(m_prevMouseState & LeftPress) && !(m_prevMouseState & LeftPressing)
 				&& !(m_prevMouseState & RightPress) && !(m_prevMouseState & RightPressing))
 			{
-				//OutputDebugStringA("NonState\n");
 				break;
 			}
 		case LeftClick:
 			if ((m_prevMouseState & MOUSESTATE::LeftPress) && !(m_diMouseState.rgbButtons[0] & DEVICEPUSH))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftClick);
-				//OutputDebugStringA("LeftClick\n");
 			}
 		case LeftDoubleClick:
 			if ((m_prevMouseState & MOUSESTATE::LeftClick) && (m_prevMouseState & MOUSESTATE::LeftPress) && 
 				!(m_diMouseState.rgbButtons[0] & DEVICEPUSH))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftDoubleClick);
-				//OutputDebugStringA("LeftDoubleClick\n");
 			}
 		case LeftDrag:
 			if ((m_diMouseState.lX != 0 || m_diMouseState.lY != 0) && (m_prevMouseState & MOUSESTATE::LeftPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftDrag);
-				//OutputDebugStringA("LeftDrag\n");
 			}
 		case LeftPress:
 			if ( m_diMouseState.rgbButtons[0] & DEVICEPUSH && !(m_prevMouseState & LeftPress) && !(m_prevMouseState & LeftPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftPress);
-				//OutputDebugStringA("LeftPress\n");
+				m_prevTick = curTick;
 			}
 		case LeftPressing:
-			if (m_diMouseState.rgbButtons[0] & DEVICEPUSH && (m_prevMouseState & MOUSESTATE::LeftPress || m_prevMouseState & MOUSESTATE::LeftPressing))
+			if (m_diMouseState.rgbButtons[0] & DEVICEPUSH )
 			{
-				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftPressing);
-				//tmpMouseState = (MOUSESTATE)(tmpMouseState ^ MOUSESTATE::Press);			//鼠标状态为Pressing，则不需要Press
-				//OutputDebugStringA("LeftPressing\n");
+				if( (m_prevMouseState & MOUSESTATE::LeftPress  && ((curTick - m_prevTick) >= tInterval)) ||
+					m_prevMouseState & MOUSESTATE::LeftPressing )
+					tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftPressing);
 			}
 		case LeftRelease:
 			if  ( !(m_diMouseState.rgbButtons[0] & DEVICEPUSH) && (m_prevMouseState & LeftPress || m_prevMouseState & LeftPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftRelease);
-				//OutputDebugStringA("LeftRelease\n");
 			}
 		case RightClick:
 			if ((m_prevMouseState & MOUSESTATE::RightPress) && !(m_diMouseState.rgbButtons[1] & DEVICEPUSH))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightClick);
-				//OutputDebugStringA("RightClick\n");
 			}
 		case RightDoubleClick:
 			if ((m_prevMouseState & MOUSESTATE::RightClick) && (m_prevMouseState & MOUSESTATE::RightPress) &&
 				!(m_diMouseState.rgbButtons[1] & DEVICEPUSH))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightDoubleClick);
-				//OutputDebugStringA("RightDoubleClick\n");
 			}
 		case RightDrag:
 			if ((m_diMouseState.lX != 0 || m_diMouseState.lY != 0) && (m_prevMouseState & MOUSESTATE::RightPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightDrag);
-				//OutputDebugStringA("RightDrag\n");
 			}
 		case RightPress:
 			if (m_diMouseState.rgbButtons[1] & DEVICEPUSH && !(m_prevMouseState & RightPress) && !(m_prevMouseState & RightPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightPress);
-				//OutputDebugStringA("RightPress\n");
+				m_prevTick = curTick;
 			}
 		case RightPressing:
-			if (m_diMouseState.rgbButtons[1] & DEVICEPUSH && (m_prevMouseState & MOUSESTATE::RightPress || m_prevMouseState & MOUSESTATE::RightPressing))
+			if (m_diMouseState.rgbButtons[1] & DEVICEPUSH)
 			{
-				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightPressing);
-				//tmpMouseState = (MOUSESTATE)(tmpMouseState ^ MOUSESTATE::Press);			//鼠标状态为Pressing，则不需要Press
-				//OutputDebugStringA("RightPressing\n");
+				if ((m_prevMouseState & MOUSESTATE::RightPress && ((curTick - m_prevTick) >= tInterval)) ||
+					m_prevMouseState & MOUSESTATE::RightPressing)
+					tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightPressing);
 			}
 		case RightRelease:
 			if (!(m_diMouseState.rgbButtons[1] & DEVICEPUSH) && (m_prevMouseState & RightPress || m_prevMouseState & RightPressing))
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightRelease);
-				//OutputDebugStringA("RightRelease\n");
 			}
 		case Move:
 			if (m_diMouseState.lX != 0 || m_diMouseState.lY != 0)
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::Move);
-				//OutputDebugStringA("Move\n");
 			}
 		case Wheel:
 			if (m_diMouseState.lZ != 0)
 			{
 				tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::Wheel);
-				//OutputDebugStringA("Wheel\n");
 			}
 		}
 	}
-	m_prevMouseState = tmpMouseState;
 
 	if (tmpMouseState == MOUSESTATE::NonState)
 		isAction = FALSE;
+	if ((curTick - m_prevTick) < tInterval)
+	{
+		if (m_prevMouseState & MOUSESTATE::LeftPress)
+			tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::LeftPress);
+		if(m_prevMouseState & MOUSESTATE::RightPress)
+			tmpMouseState = (MOUSESTATE)(tmpMouseState | MOUSESTATE::RightPress);
+	}
+	//else
+	//{
+	//	m_prevTick = curTick;
+	//}
+	m_prevMouseState = tmpMouseState;
 	m_isMouseAction = isAction;
 	return isAction;
 }
 
 BOOL DInput::MatchMouseState(MOUSESTATE mouseState)
 {
-	if (m_isMouseAction == FALSE)
+	if (m_isMouseAction == FALSE )
 		return FALSE;
+	//DWORD curTick = GetTickCount();
+	//if(curTick - m_prevTick > )
 
 	return (BOOL)(m_prevMouseState & mouseState);
 }
@@ -253,7 +259,7 @@ BOOL DInput::MatchKeyboardState(KEYBOARDINFO keyboardInfo)
 	return isMatch;
 }
 
-VOID DInput::GetMousePos(D3DXVECTOR3 * pMousePosOut)
+VOID DInput::GetMousePos(D3DXVECTOR2 * pMousePosOut)
 {
 	if (pMousePosOut == nullptr)
 		return;
@@ -265,7 +271,16 @@ VOID DInput::GetMousePos(D3DXVECTOR3 * pMousePosOut)
 	//pMousePosOut->z = m_diMouseState.lZ;	
 	pMousePosOut->x = mousePos.x;
 	pMousePosOut->y = mousePos.y;
-	pMousePosOut->z = 0;
+}
+
+VOID DInput::GetRltMousePos(D3DXVECTOR3 * pRltMousePosOut)
+{
+	if (pRltMousePosOut == nullptr)
+		return;
+
+	pRltMousePosOut->x = m_diMouseState.lX;
+	pRltMousePosOut->y = m_diMouseState.lY;
+	pRltMousePosOut->z = m_diMouseState.lZ;
 }
 
 BOOL DInput::GetDeviceState(INPUTDEVICE queryDevice)
@@ -288,5 +303,5 @@ BOOL DInput::GetDeviceState(INPUTDEVICE queryDevice)
 	default:
 		break;
 	}
-	return !FAILED(hr);
+	return SUCCEEDED(hr);
 }

@@ -5,6 +5,7 @@
 #include <dinput.h>
 
 #define KBPUSHCOUNT		8		//同时响应键盘按下最大数
+
 enum COOPERALEVEL
 {
 	Exclusive = 0x000001,
@@ -218,7 +219,8 @@ public:
 	BOOL MatchKeyboardState(KEYBOARDINFO keyboardInfo);
 
 public:
-	VOID GetMousePos(D3DXVECTOR3 * pMousePosOut);
+	VOID GetMousePos(D3DXVECTOR2 * pMousePosOut);
+	VOID GetRltMousePos(D3DXVECTOR3 * pRltMousePosOut);
 
 private:
 	BOOL GetDeviceState(INPUTDEVICE queryDevice);
@@ -239,4 +241,5 @@ private:
 	BOOL m_isKeyboardAction;
 
 	D3DXVECTOR3 m_mousePos;
+	DWORD m_prevTick;
 };

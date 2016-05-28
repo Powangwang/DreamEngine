@@ -10,7 +10,7 @@ public:
 	VOID Run();
 
 public:
-	BOOL LoadTexture(LPWSTR textureFile);
+	BOOL LoadTexture(LPCWSTR textureFile);
 public:
 
 	//VOID SetMaterial(D3DMATERIAL9& mat);

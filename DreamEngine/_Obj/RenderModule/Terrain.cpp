@@ -31,7 +31,7 @@ DTerrain::~DTerrain()
 }
 
 //地形读取比较耗时，后期采用异步读取方式
-BOOL DTerrain::CreateTerrain(WCHAR* terrainRawPath, WCHAR* terrainTexturePath)
+BOOL DTerrain::CreateTerrain(LPCWSTR terrainRawPath, LPCWSTR terrainTexturePath)
 {
 	if (!ReadRawFile(terrainRawPath))
 		return FALSE;
@@ -169,7 +169,7 @@ BOOL DTerrain::InitIndices(LPD3DXMESH terrainMesh)
 	return TRUE;
 }
 
-BOOL DTerrain::InitTexture(DMeshRender* terrainMesh, WCHAR* textureFilePath)
+BOOL DTerrain::InitTexture(DMeshRender* terrainMesh, LPCWSTR textureFilePath)
 {
 	HRESULT hr = 0;
 	FLOAT terrainScale = m_terrainInfo.thiHeightScale;
@@ -325,7 +325,7 @@ VOID DTerrain::InitEffect(DMeshRender* meshRender)
 	meshRender->AddSamplerState(sstate);
 }
 
-BOOL  DTerrain::ReadRawFile(WCHAR* terrainFilePath)
+BOOL  DTerrain::ReadRawFile(LPCWSTR terrainFilePath)
 {
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, terrainFilePath, L"r");

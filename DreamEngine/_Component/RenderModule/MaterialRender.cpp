@@ -15,7 +15,7 @@ DMaterialRender::DMaterialRender(DGameObject * gameObj, DWORD indexInParent, D3D
 	: DBaseCom(L"", COMTYPE::DERenderMaterial, gameObj, indexInParent),
 	material(mat), texture(texture)
 {
-
+	material.Ambient = material.Diffuse;
 }
 
 DMaterialRender::~DMaterialRender()
@@ -34,7 +34,7 @@ VOID DMaterialRender::Run()
 		DDEInitialize::gRootDevice->SetTexture(0, texture);
 }
 
-BOOL DMaterialRender::LoadTexture(LPWSTR textureFile)
+BOOL DMaterialRender::LoadTexture(LPCWSTR textureFile)
 {
 	if (FAILED(D3DXCreateTextureFromFile(DDEInitialize::gRootDevice, textureFile, &texture)))
 		return FALSE;

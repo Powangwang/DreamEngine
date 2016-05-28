@@ -78,7 +78,7 @@ private:
 private:
 	//DMaterialRender* m_pMatRender;
 	vector<DMaterialRender*> m_matRenders;
-	LPD3DXMESH m_pMess;
+	LPD3DXMESH m_pMesh;
 
 	vector<RENDERSTATE> m_renderStates;
 	vector<RENDERSTATE> m_orignRenderStates;
