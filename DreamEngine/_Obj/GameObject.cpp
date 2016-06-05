@@ -59,6 +59,8 @@ DBaseCom* DGameObject::AddComponent(COMTYPE comType)
 	case DERenderMesh:
 		baseCom = new DMeshRender(this, comIndex);
 		break;
+	case DEAnimator:
+		baseCom = new DAnimator(this, comIndex);
 	default:
 		break;
 	}

@@ -157,22 +157,26 @@ bool InitializeObjects()
 	//camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -15.0f), Space::World);
 	camera->GetTransform()->Translate(D3DXVECTOR3(0.0f, 300.0f, -600.0f), Space::World);
 
-	terrain = new DTerrain(256, 256, 10, 2);
+	terrain = new DTerrain(256, 256, 20, 2);
 	terrain->CreateTerrain(L"..\\Resource\\coastMountainEx.raw", L"..\\Resource\\terrainstone.jpg");	
 	//terrain = new DTerrain(64, 64, 10, 2);
 	//terrain->CreateTerrain(L"..\\Resource\\coastMountain64.raw");
 
 	wstring skyPath = L"..\\Resource\\skybox\\Sun\\";
 	//LPCWSTR pp = skyPath.data();
-	skybox = new DSky(20000.0f);
+	skybox = new DSky(10000.0f);
 	skybox->CreateSkybox( (skyPath + wstring(L"Front.png")).data(), (skyPath + wstring(L"Back.png")).data(),
 		(skyPath + wstring(L"Left.png")).data(), (skyPath + wstring(L"Right.png")).data(), (skyPath + wstring(L"Top.png")).data());
 	skybox->GetTransform()->Translate(D3DXVECTOR3(0.0f, -5000.0f, 0.0f), Space::World);
 
 	gameObject = new DGameObject();
-	gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, 30.0f, -400.0f), Space::World);
-	DMeshRender* meshRender =  (DMeshRender*)gameObject->AddComponent(COMTYPE::DERenderMesh);
-	meshRender->CreateMeshFromFileX(L"..\\Resource\\MeshFile\\King\\knight.X", D3DXMESH_MANAGED);
+	gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, 280.0f, -560.0f), Space::World);
+	//DMeshRender* meshRender =  (DMeshRender*)gameObject->AddComponent(COMTYPE::DERenderMesh);
+	//meshRender->CreateMeshFromFileX(L"..\\Resource\\MeshFile\\King\\knight.X", D3DXMESH_MANAGED);
+	DAnimator* animator = (DAnimator*)gameObject->AddComponent(COMTYPE::DEAnimator);
+	animator->LoadAnimatorFromXFile(L"..\\Resource\\MeshFile\\lxq\\lxq.X", D3DXMESH_MANAGED);
+	//animator->LoadAnimatorFromXFile(L"..\\Resource\\MeshFile\\King\\knight.X", D3DXMESH_MANAGED);
+
 	//meshRender->CreateMeshTeapot();
 	//meshRender->CreateMeshBox(D3DXVECTOR3(1, 1, 1));
 	//meshRender->CreateBox();
@@ -198,7 +202,7 @@ void RenderScene()
 	camera->BegineShowObject();
 	skybox->Run();
 	gameObject->Run();
-	//font->Run();
+	font->Run();
 	terrain->Run();
 	camera->EndShowObject();
 
@@ -259,9 +263,9 @@ void InputCotrol()
 			input->GetRltMousePos(&mousePos);
 			D3DXVECTOR3 cameraRotate;
 			
-			if(abs(mousePos.x) - abs(mousePos.y) > 2)
+			if(abs(mousePos.x) - abs(mousePos.y) > 0)
 				mousePos.y = 0;
-			if(abs(mousePos.y) - abs(mousePos.x) > 2)
+			if(abs(mousePos.y) - abs(mousePos.x) > 0)
 				mousePos.x = 0;
 
 			cameraRotate.x = mousePos.y;
@@ -301,6 +305,16 @@ void InputCotrol()
 		if (input->MatchKeyboardState(keyInfo))
 		{
 			gameObject->GetTransform()->Translate(D3DXVECTOR3(angle, 0.0f, 0.0f), Space::World);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_Z;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f, -angle * 0.1f ), Space::World);
+		}
+		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_C;
+		if (input->MatchKeyboardState(keyInfo))
+		{
+			gameObject->GetTransform()->Translate(D3DXVECTOR3(0.0f, 0.0f,angle * 0.1f), Space::World);
 		}
 		keyInfo.kiKeyboardMap = KEYBOARDMAP::Bk_Q;
 		if (input->MatchKeyboardState(keyInfo))

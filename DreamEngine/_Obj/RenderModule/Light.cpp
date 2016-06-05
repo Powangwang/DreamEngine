@@ -95,6 +95,7 @@ BOOL DLight::SetLightSpecularColor(D3DCOLORVALUE & color)
 	m_light.Specular = color;
 
 	m_isNeedApply = TRUE;
+	DDEInitialize::gRootDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 	DDEInitialize::gRootDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
 	return TRUE;
 }

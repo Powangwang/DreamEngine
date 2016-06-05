@@ -153,6 +153,8 @@
     <ClCompile Include="_CommUtil\FrameModule\DEInitialize.cpp" />
     <ClCompile Include="_CommUtil\UtilModule\Ray.cpp" />
     <ClCompile Include="_CommUtil\UtilModule\String.cpp" />
+    <ClCompile Include="_Component\AnimatModule\AllocateHierarchy.cpp" />
+    <ClCompile Include="_Component\AnimatModule\Animator.cpp" />
     <ClCompile Include="_Component\BaseCom.cpp" />
     <ClCompile Include="_Component\RenderModule\MaterialRender.cpp" />
     <ClCompile Include="_Component\RenderModule\MeshRender.cpp" />
@@ -171,6 +173,8 @@
     <ClInclude Include="_CommUtil\FrameModule\DEInitialize.h" />
     <ClInclude Include="_CommUtil\UtilModule\Ray.h" />
     <ClInclude Include="_CommUtil\UtilModule\String.h" />
+    <ClInclude Include="_Component\AnimatModule\AllocateHierarchy.h" />
+    <ClInclude Include="_Component\AnimatModule\Animator.h" />
     <ClInclude Include="_Component\BaseCom.h" />
     <ClInclude Include="_Component\CommComponent.h" />
     <ClInclude Include="_Component\RenderModule\CommRenderHead.h" />

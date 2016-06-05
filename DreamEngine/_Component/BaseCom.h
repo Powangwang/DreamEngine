@@ -11,7 +11,8 @@ enum  COMTYPE
 	DERenderUnkown,
 	DERenderTransform,
 	DERenderMesh,
-	DERenderMaterial
+	DERenderMaterial,
+	DEAnimator
 };
 
 
